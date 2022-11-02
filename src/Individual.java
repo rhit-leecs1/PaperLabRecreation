@@ -92,6 +92,15 @@ public class Individual {
     	}
     	return s;
     }
+    public int getFitness()
+    {
+    	int sum = 0;
+    	for(Gene g : genes)
+    	{
+    		sum+=g.getBin();
+    	}
+    	return sum;
+    }
     
     
 }
