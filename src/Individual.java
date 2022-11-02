@@ -5,72 +5,56 @@ import java.util.Arrays;
 
 import javax.swing.*;
 public class Individual {
-    private Gene[][] genes;
+    private Gene[] genes;
     public Individual()
     {
-    	genes = new Gene[10][10];
-    	for(int r = 0; r < genes.length; r++)
-    	{
-    		for(int c = 0; c < genes[0].length; c++)
-    		{
-    			genes[r][c] = new Gene(r*10+c);
-    		}
-    	}
+    	genes = new Gene[100];
+		for(int c = 0; c < genes.length; c++)
+		{
+			genes[c] = new Gene(c);
+		}
     }
     public Individual(int size)
     {
     	if(size == 20)
-    		genes = new Gene[5][4];
+    		genes = new Gene[20];
     	else if(size == 100)
-    		genes = new Gene[10][10];
+    		genes = new Gene[100];
     	else
     		System.err.println("Error: Invalid Chromosome Size");
-    	for(int r = 0; r < genes.length; r++)
-    	{
-    		for(int c = 0; c < genes[0].length; c++)
-    		{
-    			genes[r][c] = new Gene(r*10+c);
-    		}
-    	}
+		for(int c = 0; c < genes.length; c++)
+		{
+			genes[c] = new Gene(c);
+		}
+    	
     }
     public Individual(int size, String geneStr)
     {
     	if(size == 20)
-    		genes = new Gene[5][4];
+    		genes = new Gene[20];
     	else if(size == 100)
-    		genes = new Gene[10][10];
+    		genes = new Gene[100];
+		for(int c = 0; c < genes.length; c++)
+		{
+//    		System.out.println(r + ","+c + ":"+geneStr.charAt(r*(genes.length-1) + c));
+			genes[c] = new Gene(c, geneStr.charAt(c)=='0'?false:true);
+		}
     	
-    	for(int r = 0; r < genes.length; r++)
-    	{
-    		for(int c = 0; c < genes[0].length; c++)
-    		{
-//    			System.out.println(r + ","+c + ":"+geneStr.charAt(r*(genes.length-1) + c));
-    			genes[r][c] = new Gene(r*10+c, geneStr.charAt(r*(genes.length-1) + c)=='0'?false:true);
-    		}
-    	}
     }
     public void drawOn(JPanel genePanel)
     {
-    	
-    	for(int r = 0; r < genes.length; r++)
-    	{
-    		for(int c = 0; c < genes[0].length; c++)
-    		{
-    			genePanel.add(genes[r][c]);
-    		}
-    	}
-    	
+		for(int c = 0; c < genes.length; c++)
+		{
+			genePanel.add(genes[c]);
+		}
     }
     public void mutate(double mRate)
     {
-    	for(Gene[] row : genes)
-    	{
-    		for(Gene g : row)
-    		{
-    			if(Math.random()*100 <= (mRate*100))
-    				g.flipBit();
-    		}
-    	}
+		for(Gene g : genes)
+		{
+			if(Math.random()*100 <= (mRate*100))
+				g.flipBit();
+		}
     }
     public void addListenerToGenes()
     {
@@ -81,32 +65,30 @@ public class Individual {
     			((Gene)e.getSource()).flipBit();
     		}
     	}
-    	for(Gene[] row : genes)
-    	{
-    		for(Gene g : row)
-    		{
-    			g.addActionListener(new GeneButtonListener());
+		for(Gene g : genes)
+		{
+			g.addActionListener(new GeneButtonListener());
     		}
-    	}
     }
     public String getBinString()
     {
     	String s = "";
-    	for(Gene[] row : genes)
-    	{
-    		for(Gene g : row)
-    		{
-    			s+=g.getBin();
-    		}
-    	}
+		for(Gene g : genes)
+		{
+			s+=g.getBin();
+		}
     	return s;
     }
     public String toString()
     {
     	String s = "";
-    	for(Gene[] v : genes)
+    	for(int r = 0; r < 100; r+=(genes.length==100?10:4))
     	{
-    		s += Arrays.toString(v) + "\n";
+	    	for(int i = r+0; i < genes.length; i++)
+	    	{
+	    		s += genes[i] + " ";
+	    	}
+	    	s+="\n";
     	}
     	return s;
     }
