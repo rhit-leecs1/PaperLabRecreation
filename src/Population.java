@@ -50,15 +50,23 @@ public class Population {
 	 * next generation. BE SURE you are NOT making shallow copies! Ask if you are confused!
 	 * Terminate after a predetermined number of generations
      */
+	
+
+    
+    public void truncate(double mutationRate)
+    {
+    	this.sort();
+    	for (int i = 0; i < SIZE/2; i++) {
+    		Individual cur = this.chromosomes[i];
+    	    this.chromosomes[i] = cur.mutateIndividual(mutationRate);
+    	    this.chromosomes[i+(SIZE/2)] = cur.mutateIndividual(mutationRate);
+    	}
+    }
     public void sort() 
     {
-    	System.out.println(this.chromosomes);
+//    	System.out.println(this.chromosomes);
     	Arrays.sort(this.chromosomes);
-    	System.out.println(this.chromosomes);
-    }
-    public void truncate()
-    {
-    	
+//    	System.out.println(this.chromosomes);
     }
     
     // individual1.getFitness()
