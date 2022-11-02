@@ -22,11 +22,19 @@ public class EvolutionViewer {
 		frame.add(graphTitle, BorderLayout.NORTH);
 
 		// graph
-		JPanel graphPanel = new JPanel();
-		Dimension graphPanelD = new Dimension(300, 300);
-		graphPanel.setPreferredSize(graphPanelD);
-//		graph.drawOn(graphPanel);
-		frame.add(graphPanel);
+		EvolutionComponent ec = new EvolutionComponent();
+		frame.add(ec, BorderLayout.CENTER);
+//		ec.paintComponent(g);
+		
+//		Dimension graphPanelD = new Dimension(300, 300);
+//		graphPanel.setPreferredSize(graphPanelD);
+////		graph.drawOn(graphPanel);
+//		frame.add(graphPanel);
+		
+		
+		
+		
+		
 
 		// last panel with all other components
 		JPanel bottomPanel = new JPanel();
@@ -35,7 +43,7 @@ public class EvolutionViewer {
 		// mutations
 		JLabel mutationRateLabel = new JLabel("Mutation Rate (N/pop)", SwingConstants.CENTER);
 		mutationRateLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
-		JTextField mutationRateTextField = new JTextField("1.0", 5);
+		JTextField mutationRateTextField = new JTextField("1", 5);
 
 		JLabel selectionLabel = new JLabel("Selection", SwingConstants.CENTER);
 		selectionLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
@@ -83,10 +91,13 @@ public class EvolutionViewer {
 		bottomPanel.add(elitismLabel);
 		bottomPanel.add(elitismTextField);
 		bottomPanel.add(simulationButton);
-
-		// TODO: add timer
+		
+		
+		
+		
 
 		class SimulationButtonListener implements ActionListener{
+			
 		    public void actionPerformed(ActionEvent e){
 		    	System.out.println("clicked");
 		    	
