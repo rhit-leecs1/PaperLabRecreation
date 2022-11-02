@@ -70,4 +70,31 @@ public class Population {
     }
     
     // individual1.getFitness()
+    public String toString()
+    {
+    	String s = "";
+//    	int cnt = 0;
+//    	for(int r = 0; r < 100; r+=(chromosomes.length==100?10:4))
+//    	{
+//    		s+="[ ";
+//	    	for(int i = r+0; i < chromosomes.length; i++)
+//	    	{
+//	    		s+="(" + cnt + ", ";
+//	    		s += chromosomes[i] + ") ";
+//	    		cnt++;
+//	    	}
+//	    	s+="]\n";
+//    	}
+    	
+    	int cnt = 0;
+	    	for(Individual i : chromosomes)
+	    	{
+	    		s+=i + ", ";
+	    		cnt++;
+	    	}
+	    	s+="\n";
+    	System.out.println("(cnt: " + cnt + ")");
+    	
+    	return s;
+    }
 }
