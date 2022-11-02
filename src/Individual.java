@@ -65,6 +65,13 @@ public class Individual implements Comparable {
 				g.flipBit();
 		}
     }
+    public Individual mutateIndividual(double mRate)
+    {
+    	String geneStr = this.getBinString();
+    	Individual newIndividual = new Individual(100, geneStr);
+    	newIndividual.mutate(mRate);
+    	return newIndividual;
+    }
     public void addListenerToGenes()
     {
     	class GeneButtonListener implements ActionListener
