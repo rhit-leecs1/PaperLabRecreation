@@ -9,6 +9,11 @@ public class SimulationMain {
         ChromosomeViewer cv = new ChromosomeViewer();
         cv.runChromosomeViewer();
         
-        
+        Population p = new Population(1247892374L);
+        Population p2 = new Population(1247892374L);
+        p.sort();
+        p2.sort();
+        System.out.println(p);
+        System.out.println(p2);
     }
 }
