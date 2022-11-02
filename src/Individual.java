@@ -98,15 +98,15 @@ public class Individual implements Comparable {
     public String toString()
     {
     	String s = "";
-    	for(int r = 0; r < 100; r+=(genes.length==100?10:4))
-    	{
-	    	for(int i = r+0; i < genes.length; i++)
-	    	{
-	    		s += genes[i] + " ";
-	    	}
-	    	s+="\n";
-    	}
-    	return s;
+//    	for(int r = 0; r < 100; r+=(genes.length==100?10:4))
+//    	{
+//	    	for(int i = r+0; i < genes.length; i++)
+//	    	{
+//	    		s += genes[i] + " ";
+//	    	}
+//	    	s+="\n";
+//    	}
+    	return s + this.getFitness();
     }
     public int getFitness()
     {
@@ -119,7 +119,7 @@ public class Individual implements Comparable {
     }
 	@Override
 	public int compareTo(Object o) {
-		return this.getFitness() - ((Individual)o).getFitness();
+		return ((Individual)o).etFitness() - this.getFitness();
 	}
     
     
