@@ -119,7 +119,7 @@ public class Individual implements Comparable {
     }
 	@Override
 	public int compareTo(Object o) {
-		return ((Individual)o).etFitness() - this.getFitness();
+		return ((Individual)o).getFitness() - this.getFitness();
 	}
     
     
