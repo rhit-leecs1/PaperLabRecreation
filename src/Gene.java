@@ -27,6 +27,27 @@ public class Gene extends JButton{
     	this.setPreferredSize(d);
     	this.setMaximumSize(d);
     }
+    public Gene(int num, Random r) {
+    	super(""+ num);
+    	bin = (int)Math.round(r.nextDouble()) == 0 ? false : true;
+    	if(!bin)
+    	{
+    		color = Color.black;
+    		this.setBackground(color);
+    		this.setForeground(Color.white);
+    	}
+    	if(bin)
+    	{
+    		color = Color.green;
+    		this.setBackground(color);
+    		this.setForeground(Color.black);
+    	}
+    	this.setBorderPainted(false);
+    	this.setFocusPainted(false);
+    	Dimension d = new Dimension(5,5);
+    	this.setPreferredSize(d);
+    	this.setMaximumSize(d);
+	}
     public Gene(int num, boolean bin)
     {
     	super(""+ num);
@@ -49,7 +70,7 @@ public class Gene extends JButton{
     	this.setPreferredSize(d);
     	this.setMaximumSize(d);
     }
-    public String toString()
+	public String toString()
     {
     	return "Gene #" + num + ", " + bin;
     }

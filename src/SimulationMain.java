@@ -8,5 +8,7 @@ public class SimulationMain {
 //        System.out.println(test1);
         ChromosomeViewer cv = new ChromosomeViewer();
         cv.runChromosomeViewer();
+        
+        
     }
 }

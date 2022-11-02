@@ -2,9 +2,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.swing.*;
-public class Individual {
+public class Individual implements Comparable {
     private Gene[] genes;
     public Individual()
     {
@@ -14,6 +15,14 @@ public class Individual {
 			genes[c] = new Gene(c);
 		}
     }
+    public Individual(Random r) {
+    	genes = new Gene[100];
+		for(int c = 0; c < genes.length; c++)
+		{
+			genes[c] = new Gene(c, r);
+		}
+	}
+    
     public Individual(int size)
     {
     	if(size == 20)
@@ -41,7 +50,7 @@ public class Individual {
 		}
     	
     }
-    public void drawOn(JPanel genePanel)
+	public void drawOn(JPanel genePanel)
     {
 		for(int c = 0; c < genes.length; c++)
 		{
@@ -101,6 +110,10 @@ public class Individual {
     	}
     	return sum;
     }
+	@Override
+	public int compareTo(Object o) {
+		return this.getFitness() - ((Individual)o).getFitness();
+	}
     
     
 }
