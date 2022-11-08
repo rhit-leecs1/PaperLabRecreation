@@ -58,6 +58,20 @@ public class Individual implements Comparable {
 			genePanel.add(genes[c]);
 		}
     }
+	public void drawIndividual(Graphics2D g2d, int x, int y)
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int c = 0; c < 10; c++)
+			{
+				GeneButton g = genes[i*10 + c];
+				g2d.setColor(g.getColor());
+//				g2d.drawRect(x+5*c, y+5*i, 5, 5);
+				g2d.fillRect(x+5*c, y+5*i, 5, 5);
+			}
+		}
+		
+	}
     public void mutate(double mRate)
     {
 		for(GeneButton g : genes)

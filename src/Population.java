@@ -65,9 +65,15 @@ public class Population {
 
 
 
-	public void drawOn(Graphics2D g)
+    public void drawOn(Graphics2D g)
     {
-    	
+    	for(int i = 0; i < 10; i++)
+    	{
+    		for(int c = 0; c < 10; c++)
+    		{
+    			chromosomes[i*10+c].drawIndividual(g, 50 + c*52, 50 + i*52);
+    		}
+    	}
     }
     
     /*

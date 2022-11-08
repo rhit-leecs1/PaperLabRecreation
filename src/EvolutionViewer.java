@@ -44,7 +44,9 @@ public class EvolutionViewer {
 //		frame.add(graphPanel);
 		
 		
-		
+		//population viewer
+		PopulationViewer pv = new PopulationViewer(population);
+        pv.runPopulationViewer();
 		
 		
 
@@ -124,6 +126,7 @@ public class EvolutionViewer {
 					population.truncate();
 //					ec.updatePop(population);
 					ec.repaint();
+					pv.updatePop(population);
 					System.out.println(population);
 				}
 			}
