@@ -7,8 +7,6 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class EvolutionViewer {
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-=======
 	
 	private final static int DEFAULT_FRAME_X = 1500;
 	private final static int DEFAULT_FRAME_Y = 700;
@@ -19,12 +17,7 @@ public class EvolutionViewer {
 	
 	private final static int SIZE = 100;
 	//user input
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 	private boolean terminateOn;
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-	private final static int SIZE = 100;
-=======
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 	private boolean crossover;
 	private int generations;
 	private int elitismNum;
@@ -34,14 +27,6 @@ public class EvolutionViewer {
 	private JButton simulationButton;
 	private EvolutionComponent ec;
 	private JLabel genCntLabel;
-
-	private final static int DEFAULT_FRAME_X = 1500;
-	private final static int DEFAULT_FRAME_Y = 700;
-	
-	private final static int TERMINATE_AT_FITNESS = 90;
-	private final static int DEFAULT_GENERATIONS = 100;
-	private final static Font DEFAULT_FONT = new Font("Times New Roman", Font.BOLD, 16);
-	
 	public EvolutionViewer()
 	{
 		
@@ -67,10 +52,7 @@ public class EvolutionViewer {
 		frame.add(graphTitle, BorderLayout.NORTH);
 		frame.add(genCntLabel, BorderLayout.EAST);
 		
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-=======
 		
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 		// graph (evolution component)
 		frame.add(ec, BorderLayout.CENTER);
 		
@@ -82,9 +64,6 @@ public class EvolutionViewer {
         BestIndividualViewer biv = new BestIndividualViewer(population.getBestIndividual());
         biv.runBestIndividualViewer();
 		
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-		// bottom panel
-=======
         // timer
   		timer = new Timer(100, new ActionListener() {
   			public void actionPerformed(ActionEvent e)
@@ -113,10 +92,10 @@ public class EvolutionViewer {
         
         
 		// last panel with all other components
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 		JPanel bottomPanel = new JPanel();
 		frame.add(bottomPanel, BorderLayout.SOUTH);
 
+		// mutations
 		JLabel mutationRateLabel = new JLabel("Mutation Rate (N/pop)", SwingConstants.CENTER);
 		mutationRateLabel.setFont(DEFAULT_FONT);
 		JTextField mutationRateTextField = new JTextField("1", 5);
@@ -150,11 +129,7 @@ public class EvolutionViewer {
 		genomeLengthLabel.setFont(DEFAULT_FONT);
 		JTextField genomeLengthTextField = new JTextField("100", 5);
 		
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-		JLabel elitismLabel = new JLabel("Elitism %", SwingConstants.CENTER);
-=======
 		JLabel elitismLabel = new JLabel("Elitism % (N/pop)", SwingConstants.CENTER);
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 		elitismLabel.setFont(DEFAULT_FONT);
 		JTextField elitismTextField = new JTextField("0", 5);
 		
@@ -178,37 +153,7 @@ public class EvolutionViewer {
 		bottomPanel.add(elitismLabel);
 		bottomPanel.add(elitismTextField);
 		bottomPanel.add(simulationButton);
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-		
-		// timer
-		timer = new Timer(generations, new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				if((generations == 0) || (terminateOn && population.getBestFitness() == TERMINATE_AT_FITNESS))
-				{
-					timer.stop();
-					simulationButton.setEnabled(false);
-				}
-				else
-				{
-					generations--;
-					population.truncate();
-					ec.updatePop(population);
-					ec.repaint();
-					System.out.println("ec repaint");
-					pv.updatePop(population);
-					
-					biv.updateBest(population.getBestIndividual());
-					genCntLabel.setText("Generation " + (100-generations) + "     ");
-					System.out.println("Generation " + (100-generations));
-					System.out.println(population);
-				}
-			}
-		});
-		
-=======
 
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 		class SimulationButtonListener implements ActionListener{
 			private String state;
 			public SimulationButtonListener()
@@ -277,10 +222,6 @@ public class EvolutionViewer {
 	}
 }
 
-<<<<<<< Upstream, based on branch 'master' of https://github.com/rhit-csse220/csse220-fall-2022-23-final-project-f23-r-1001.git
-
-=======
->>>>>>> f013e44 elitism and crossover update, evolution viewer and component clean
 //class SimulationSelectionDropDownListener implements ActionListener{
 //    public void actionPerformed(ActionEvent e){
 //
