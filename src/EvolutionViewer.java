@@ -10,6 +10,7 @@ public class EvolutionViewer {
 	private final int terminateAtFitness = 90;
 	private boolean terminateOn;
 	private int size = 100;
+	private boolean crossover;
 	private Population population;
 	private Timer timer;
 	private int generations;
@@ -23,6 +24,7 @@ public class EvolutionViewer {
 		ec = new EvolutionComponent(population);
 		generations = 100;
 		terminateOn = false;
+		crossover = false;
 		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
 	}
 	public void runEvolutionViewer() {
@@ -179,6 +181,7 @@ public class EvolutionViewer {
 						population.setMutationRate(mRate);
 						generations = Integer.parseInt(generationsStr);
 						terminateOn = terminateBool;
+						crossover = crossoverBool;
 						state = "started";
 						simulationButton.setText("Pause");
 						timer.start();
