@@ -13,7 +13,7 @@ public class PopulationViewer {
     {
     	//initializing frame
     	JFrame frame = new JFrame();
-    	Dimension d = new Dimension(700,700);
+    	Dimension d = new Dimension(400,400);
     	frame.setSize(d);
     	frame.setTitle("Population Viewer");
 

@@ -67,7 +67,7 @@ public class Individual implements Comparable {
 				GeneButton g = genes[i*10 + c];
 				g2d.setColor(g.getColor());
 //				g2d.drawRect(x+5*c, y+5*i, 5, 5);
-				g2d.fillRect(x+5*c, y+5*i, 5, 5);
+				g2d.fillRect(x+3*c, y+3*i, 3, 3);
 			}
 		}
 		

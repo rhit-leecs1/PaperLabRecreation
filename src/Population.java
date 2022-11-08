@@ -71,7 +71,7 @@ public class Population {
     	{
     		for(int c = 0; c < 10; c++)
     		{
-    			chromosomes[i*10+c].drawIndividual(g, 50 + c*52, 50 + i*52);
+    			chromosomes[i*10+c].drawIndividual(g, 5 + c*31, 5 + i*31);
     		}
     	}
     }
