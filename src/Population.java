@@ -17,10 +17,17 @@ public class Population {
 	}
     public int getBestFitness()
     {
+    	sort();
     	return chromosomes[0].getFitness();
+    }
+    public int getAverageFitness()
+    {
+    	sort();
+    	return chromosomes[chromosomes.length/2].getFitness();
     }
     public int getLeastFitness()
     {
+    	sort();
     	return chromosomes[chromosomes.length-1].getFitness();
     }
     public Population(long seed) 

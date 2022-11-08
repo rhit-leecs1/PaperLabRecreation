@@ -12,9 +12,12 @@ public class EvolutionViewer {
 	private Timer timer;
 	private int generations;
 	private JButton simulationButton;
+	private EvolutionComponent ec;
 	public EvolutionViewer()
 	{
+		
 		population = new Population();
+		ec = new EvolutionComponent(population);
 		generations = 100;
 	}
 	public void runEvolutionViewer() {
@@ -31,7 +34,7 @@ public class EvolutionViewer {
 		frame.add(graphTitle, BorderLayout.NORTH);
 
 		// graph
-		EvolutionComponent ec = new EvolutionComponent();
+		
 		frame.add(ec, BorderLayout.CENTER);
 //		ec.paintComponent(g);
 		
@@ -117,9 +120,10 @@ public class EvolutionViewer {
 				}
 				else
 				{
-					
 					generations--;
 					population.truncate();
+//					ec.updatePop(population);
+					ec.repaint();
 					System.out.println(population);
 				}
 			}
