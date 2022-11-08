@@ -7,9 +7,8 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class EvolutionViewer {
-	private final int terminateAtFitness = 90;
 	private boolean terminateOn;
-	private int size = 100;
+	private final static int SIZE = 100;
 	private boolean crossover;
 	private Population population;
 	private Timer timer;
@@ -17,95 +16,92 @@ public class EvolutionViewer {
 	private JButton simulationButton;
 	private EvolutionComponent ec;
 	private JLabel genCntLabel;
+
+	private final static int DEFAULT_FRAME_X = 1500;
+	private final static int DEFAULT_FRAME_Y = 700;
+	
+	private final static int TERMINATE_AT_FITNESS = 90;
+	private final static int DEFAULT_GENERATIONS = 100;
+	private final static Font DEFAULT_FONT = new Font("Times New Roman", Font.BOLD, 16);
+	
 	public EvolutionViewer()
 	{
 		
 		population = new Population();
 		ec = new EvolutionComponent(population);
-		generations = 100;
+		generations = DEFAULT_GENERATIONS;
 		terminateOn = false;
 		crossover = false;
 		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
 	}
 	public void runEvolutionViewer() {
-		// initializing frame to the wanted size
+		// initialize frame
 		JFrame frame = new JFrame();
-		Dimension frameD = new Dimension(1500, 700);
+		Dimension frameD = new Dimension(DEFAULT_FRAME_X, DEFAULT_FRAME_Y);
 		frame.setSize(frameD);
 		frame.setTitle("Evolution Viewer");
-//		frame.setResizable(false);
+		frame.setResizable(false);
 		
 		// file path label at top of frame
 		JLabel graphTitle = new JLabel("Fitness Over Generations", SwingConstants.CENTER);
-		graphTitle.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		graphTitle.setFont(DEFAULT_FONT);
 		frame.add(graphTitle, BorderLayout.NORTH);
 		frame.add(genCntLabel, BorderLayout.EAST);
 		
-		
-		// graph
+		// graph (evolution component)
 		frame.add(ec, BorderLayout.CENTER);
 		
-//		ec.paintComponent(g);
-		
-//		Dimension graphPanelD = new Dimension(300, 300);
-//		graphPanel.setPreferredSize(graphPanelD);
-////		graph.drawOn(graphPanel);
-//		frame.add(graphPanel);
-		
-		
-		//population viewer
+		// population viewer
 		PopulationViewer pv = new PopulationViewer(population);
         pv.runPopulationViewer();
 		
-        //best individual viewer
+        // best individual viewer
         BestIndividualViewer biv = new BestIndividualViewer(population.getBestIndividual());
         biv.runBestIndividualViewer();
 		
-
-		// last panel with all other components
+		// bottom panel
 		JPanel bottomPanel = new JPanel();
 		frame.add(bottomPanel, BorderLayout.SOUTH);
 
-		// mutations
 		JLabel mutationRateLabel = new JLabel("Mutation Rate (N/pop)", SwingConstants.CENTER);
-		mutationRateLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		mutationRateLabel.setFont(DEFAULT_FONT);
 		JTextField mutationRateTextField = new JTextField("1", 5);
 
 		JLabel selectionLabel = new JLabel("Selection", SwingConstants.CENTER);
-		selectionLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		selectionLabel.setFont(DEFAULT_FONT);
 		String[] selections = {"Truncation"};
 		JComboBox selectionList = new JComboBox(selections);
 		selectionList.setSelectedIndex(0);
 //		selectionList.addActionListener(selectionList);
 		
 		JLabel crossoverLabel = new JLabel("Crossover?", SwingConstants.CENTER);
-		crossoverLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		crossoverLabel.setFont(DEFAULT_FONT);
 		JCheckBox crossoverCheckBox = new JCheckBox();
 		crossoverCheckBox.setBounds(20,20,20,20);
 		
 		JLabel populationSizeLabel = new JLabel("Population Size", SwingConstants.CENTER);
-		populationSizeLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		populationSizeLabel.setFont(DEFAULT_FONT);
 		JTextField populationSizeTextField = new JTextField("100", 5);
 		
 		JLabel generationsLabel = new JLabel("Generations", SwingConstants.CENTER);
-		generationsLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
-		JTextField generationsTextField = new JTextField("1", 5);
+		generationsLabel.setFont(DEFAULT_FONT);
+		JTextField generationsTextField = new JTextField("100", 5);
 
 		JLabel terminateLabel = new JLabel("Terminal Fitness 90?", SwingConstants.CENTER);
-		terminateLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		terminateLabel.setFont(DEFAULT_FONT);
 		JCheckBox terminateCheckBox = new JCheckBox();
 		terminateCheckBox.setBounds(20,20,20,20);
 		
 		JLabel genomeLengthLabel = new JLabel("Genome Length", SwingConstants.CENTER);
-		genomeLengthLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		genomeLengthLabel.setFont(DEFAULT_FONT);
 		JTextField genomeLengthTextField = new JTextField("100", 5);
 		
 		JLabel elitismLabel = new JLabel("Elitism %", SwingConstants.CENTER);
-		elitismLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		elitismLabel.setFont(DEFAULT_FONT);
 		JTextField elitismTextField = new JTextField("0", 5);
 		
 		simulationButton = new JButton("Start Evolution");
-		simulationButton.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		simulationButton.setFont(DEFAULT_FONT);
 
 		bottomPanel.add(mutationRateLabel);
 		bottomPanel.add(mutationRateTextField);
@@ -125,16 +121,11 @@ public class EvolutionViewer {
 		bottomPanel.add(elitismTextField);
 		bottomPanel.add(simulationButton);
 		
-		timer = new Timer(100, new ActionListener() {
+		// timer
+		timer = new Timer(generations, new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				if(terminateOn && population.getBestFitness() == terminateAtFitness)
-				{
-					timer.stop();
-					simulationButton.setEnabled(false);
-				}
-					
-				if(generations==0)
+				if((generations == 0) || (terminateOn && population.getBestFitness() == TERMINATE_AT_FITNESS))
 				{
 					timer.stop();
 					simulationButton.setEnabled(false);
@@ -143,8 +134,9 @@ public class EvolutionViewer {
 				{
 					generations--;
 					population.truncate();
-//					ec.updatePop(population);
+					ec.updatePop(population);
 					ec.repaint();
+					System.out.println("ec repaint");
 					pv.updatePop(population);
 					
 					biv.updateBest(population.getBestIndividual());
@@ -155,8 +147,6 @@ public class EvolutionViewer {
 			}
 		});
 		
-		
-
 		class SimulationButtonListener implements ActionListener{
 			private String state;
 			public SimulationButtonListener()
@@ -177,7 +167,7 @@ public class EvolutionViewer {
 					String elitismStr = elitismTextField.getText();
 					try
 					{
-						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * size);
+						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * SIZE);
 						population.setMutationRate(mRate);
 						generations = Integer.parseInt(generationsStr);
 						terminateOn = terminateBool;
@@ -223,9 +213,8 @@ public class EvolutionViewer {
 }
 
 
-//hi
-class SimulationSelectionDropDownListener implements ActionListener{
-    public void actionPerformed(ActionEvent e){
-
-    }
-}
+//class SimulationSelectionDropDownListener implements ActionListener{
+//    public void actionPerformed(ActionEvent e){
+//
+//    }
+//}

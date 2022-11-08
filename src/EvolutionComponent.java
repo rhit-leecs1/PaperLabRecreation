@@ -6,223 +6,151 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class EvolutionComponent extends JComponent{
-	private int originX = 200;
-	private int originY = 500;
-	
-	private int YAxisLength = 400;
+	private final static int ORIGIN_X = 200;
+	private final static int ORIGIN_Y = 500;
 
+	private final static int X_AXIS_WIDTH = 1000;
+	private final static int Y_AXIS_HEIGHT = 400;
+	private final static int DELTA_Y = Y_AXIS_HEIGHT / 100;
+	private int deltaX;
+	
+	private final static int DEFAULT_GENERATIONS = 100;
+
+	private ArrayList<Line2D> bestLines;
 	private ArrayList<Line2D> avgLines;
 	private ArrayList<Line2D> worstLines;
-	private ArrayList<Line2D> bestLines;
 
-	private int XAxisVal = 1000;
-	private int rangeMultiplier = 4;
+	private final static Color BEST_COLOR = Color.BLUE;
+	private final static Color AVG_COLOR = Color.GREEN;
+	private final static Color WORST_COLOR = Color.RED;
+
+	private final static BasicStroke LINE_STROKE = new BasicStroke(2);
+	private final static BasicStroke AXES_STROKE = new BasicStroke(1);
 
 	public int numTicks;
-	Population population;
-	private int generationLength;
+	private Population population;
+	private int generations;
 	
-	private int domainMultiplier;
-
-
 	public EvolutionComponent(Population population) {
 		this.population = population;
-		this.generationLength = 100;
-		this.domainMultiplier = XAxisVal / generationLength;
-		linesetUp();
+		this.generations = DEFAULT_GENERATIONS;
+		this.deltaX = X_AXIS_WIDTH / generations;
+		this.bestLines = new ArrayList<Line2D>();
+		this.avgLines = new ArrayList<Line2D>();
+		this.worstLines = new ArrayList<Line2D>();
+		initializeGraph();
+		System.out.println("deltaX: "+deltaX);
 	}
-	public EvolutionComponent(Population population, int generationLength) {
-		this.population = population;
-		this.generationLength = generationLength;
-		this.domainMultiplier = XAxisVal / generationLength;
-		linesetUp();
+	public EvolutionComponent(Population population, int generations) {
+		this(population);
+		this.generations = generations;
+		this.deltaX = X_AXIS_WIDTH / generations;
 	}
 	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-//		System.out.println("paintComponent");
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
-
-
-//		resetLines();
 		updateAllLines();
-		
-		updateAll(g2);
+		drawAll(g2);
+		System.out.println("painted component");
 	}
-	public void updatePop(Population p)
+	public void drawAll(Graphics2D g2) {
+		drawLines(g2);
+		drawAxes(g2);
+	}
+	public void updatePop(Population population)
 	{
-		population = p;
+		this.population = population;
 	}
-	public void updateAll(Graphics2D g2)
-	{
-		g2.setStroke(new BasicStroke(2));
-		drawBestLines(g2);
-		drawWorstLines(g2);
-		drawAvgLines(g2);
-		
-		g2.setStroke(new BasicStroke(1));
-		drawBoundary(g2);
-	}
-	
 	public Population getPopulation() {
-		return population;
+		return this.population;
 	}
 	
 
-	private void linesetUp() {
-		//System.out.println("line set up called--------------------------------");
-		Line2D initialAvgLine = new Line2D.Double(originX,
-				originY - population.getAverageFitness() * rangeMultiplier, originX,
-				originY - population.getAverageFitness() * rangeMultiplier);
-		System.out.println("initial line Y cordinate for AVERAGE is " + (originY - population.getAverageFitness() * rangeMultiplier));
-		System.out.println("very intial fitness: " + population.getAverageFitness());
-		Line2D initialBestLine = new Line2D.Double(originX,
-				originY - population.getBestFitness() * rangeMultiplier, originX,
-				originY - population.getBestFitness() * rangeMultiplier);
-//		System.out.println("initial line Y cordinate for BEST is " + (originY - generation.getLatestBestFitnees()));
-		Line2D initialWorstLine = new Line2D.Double(originX,
-				originY - population.getLeastFitness() * rangeMultiplier, originX,
-				originY - population.getLeastFitness() * rangeMultiplier);
-//		System.out.println("initial line Y cordinate for WORST is " + (originY - generation.getLatestWorstFitnees()));
+	private void initializeGraph() {
+		Line2D bestLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getBestFitness() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getBestFitness() * DELTA_Y);
+		Line2D avgLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getAverageFitness() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getAverageFitness() * DELTA_Y);
+		Line2D worstLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getLeastFitness() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getLeastFitness() * DELTA_Y);
 		
-		this.avgLines = new ArrayList<Line2D>();
-		this.worstLines = new ArrayList<Line2D>();
-		this.bestLines = new ArrayList<Line2D>();
-		avgLines.add(initialAvgLine);
-		bestLines.add(initialBestLine);
-		worstLines.add(initialWorstLine);
+		bestLines.add(bestLine);
+		avgLines.add(avgLine);
+		worstLines.add(worstLine);
 	}
 	
 	public void resetLines() {
-		avgLines.clear();
 		bestLines.clear();
+		avgLines.clear();
 		worstLines.clear();
-		linesetUp();
+		initializeGraph();
 	}
 	
 	public void updateAllLines() {
-		updateLine(bestLines);
-		updateLine(avgLines);
-		updateLine(worstLines);
+		updateLines(bestLines);
+		updateLines(avgLines);
+		updateLines(worstLines);
 	}
 
-	private void updateLine(ArrayList<Line2D> lineToUpdate) {
-		int startLineIndex = lineToUpdate.size() - 1;
-		int endLineIndex = lineToUpdate.size();
-		Line2D startLine = lineToUpdate.get(startLineIndex);
+	private void updateLines(ArrayList<Line2D> lines) {
+		int startLineIndex = lines.size() - 1;
+		int endLineIndex = lines.size();
+		Line2D startLine = lines.get(startLineIndex);
 
-		double x1 = this.originX + (startLineIndex * domainMultiplier);
+		double x1 = ORIGIN_X + (startLineIndex * deltaX);
 		double y1 = startLine.getY2();
-
-		double x2 = this.originX + (endLineIndex * domainMultiplier);
+		double x2 = ORIGIN_X + (endLineIndex * deltaX);
 		double y2;
-
-		if (lineToUpdate.equals(avgLines)) {
-			//System.out.println("latest Average fitness:" + this.generation.getLatestAverageFitnees());
-			System.out.println("avg: "+this.population.getAverageFitness());
-			y2 = this.originY - this.population.getAverageFitness() * rangeMultiplier;
-
-		} else if (lineToUpdate.equals(bestLines)) {
+		
+		if (lines.equals(bestLines)) {
 			System.out.println("best: "+this.population.getBestFitness());
-			y2 = this.originY - (this.population.getBestFitness() * rangeMultiplier);
+			y2 = ORIGIN_Y - (this.population.getBestFitness() * DELTA_Y);
+
+		} else if (lines.equals(avgLines)) {
+			System.out.println("avg: "+this.population.getAverageFitness());
+			y2 = ORIGIN_Y - this.population.getAverageFitness() * DELTA_Y;
 
 		} else {
-			System.out.println("least: "+this.population.getLeastFitness());
-			y2 = this.originY - (this.population.getLeastFitness() * rangeMultiplier);
+			System.out.println("worst: "+this.population.getLeastFitness());
+			y2 = ORIGIN_Y - (this.population.getLeastFitness() * DELTA_Y);
 		}
 
 		Line2D line = new Line2D.Double(x1, y1, x2, y2);
-		//System.out.println("line created, Y: " + startingY +" to " + endY);
-//		if(startingX != endX && startingY!= endY) {
-			lineToUpdate.add(line);
-//		}
-
+		lines.add(line);
 	}
 
-	public void drawBestLines(Graphics2D g2) {
-		g2.setColor(Color.BLUE);
+	public void drawLines(Graphics2D g2) {
+		g2.setStroke(LINE_STROKE);
+		g2.setColor(BEST_COLOR);
 		for (Line2D line : this.bestLines) {
 			g2.draw(line);
 		}
-	}
-
-	public void drawAvgLines(Graphics2D g2) {
-		g2.setColor(Color.GREEN);
+		
+		g2.setColor(AVG_COLOR);
 		for (Line2D line : this.avgLines) {
 			g2.draw(line);
 		}
-	}
-
-	public void drawWorstLines(Graphics2D g2) {
-		g2.setColor(Color.RED);
+		
+		g2.setColor(WORST_COLOR);
 		for (Line2D line : this.worstLines) {
 			g2.draw(line);
 		}
 	}
 
-	public void drawBoundary(Graphics2D g2) {
+	public void drawAxes(Graphics2D g2) {
+		g2.setStroke(AXES_STROKE);
 		g2.setColor(Color.BLACK);
 		
-		g2.drawLine(originX, originY, originX, originY-YAxisLength);
-		for(int i = 40; i <= YAxisLength; i+=40) {
-			g2.drawLine(originX-5, originY-i, originX+5, originY-i);
+		g2.drawLine(ORIGIN_X, ORIGIN_Y, ORIGIN_X, ORIGIN_Y-Y_AXIS_HEIGHT);
+		for(int i = 10*DELTA_Y; i <= Y_AXIS_HEIGHT; i+=10*DELTA_Y) {
+			g2.drawLine(ORIGIN_X-5, ORIGIN_Y-i, ORIGIN_X+5, ORIGIN_Y-i);
 		}
 		
-		g2.drawLine(originX, originY, originX + XAxisVal, originY);
-		for(int i = 100; i <= this.XAxisVal; i+=100) {
-			g2.drawLine(originX+i, originY-5, originX+i, originY+5);
+		g2.drawLine(ORIGIN_X, ORIGIN_Y, ORIGIN_X + X_AXIS_WIDTH, ORIGIN_Y);
+		for(int i = 10*deltaX; i <= X_AXIS_WIDTH; i+=10*deltaX) {
+			g2.drawLine(ORIGIN_X+i, ORIGIN_Y-5, ORIGIN_X+i, ORIGIN_Y+5);
 		}
-		g2.drawLine(originX+this.XAxisVal, originY-5, originX+ this.XAxisVal, originY+5);
+		g2.drawLine(ORIGIN_X+X_AXIS_WIDTH, ORIGIN_Y-5, ORIGIN_X+ X_AXIS_WIDTH, ORIGIN_Y+5);
 		
 	}
-
-	public void drawAll(Graphics2D g2) {
-		g2.setStroke(new BasicStroke(2));
-		drawBestLines(g2);
-		drawWorstLines(g2);
-		drawAvgLines(g2);
-		g2.setStroke(new BasicStroke(1));
-		drawBoundary(g2);
-
-	}
-
-
-//	public void setNewGraphWithGenerationLength(int generationLength) {
-////		population.resetGenerarions();
-////		System.out.println("new Graph created with new generation length: "+ generationLength);
-//		this.repaint();
-//		// TODO Auto-generated method stub
-//	}
-	
-	
-//	domainMuliplier = XAxisVal / 100; // 100 is default generationLength
-
-	
-	
-	
-//	public void setDomainMultiplier(int generationLength) {
-//		//System.out.println("setDomainMultiplier called with generation length of " + generationLength);
-//		int generationLengthLimit = 1000;
-//		if (1 <= generationLength && generationLength <= generationLengthLimit) {
-////			System.out.println("X is within range");
-//
-//			if (((double) generationLengthLimit
-//					/ (double) generationLength) == (int) (generationLengthLimit / generationLength)) {
-//				//System.out.println("1000/" + generationLength + "is integer");
-////				domainMuliplier = generationLengthLimit / generationLength;
-//
-//			} else {
-//				//System.out.println("1000/" + generationLength + " is not an integer");
-////				domainMuliplier = generationLengthLimit / generationLength;
-//				this.XAxisVal = this.XAxisVal - (generationLengthLimit % generationLength);
-//				//System.out.println("domainMuliplier = " + generationLengthLimit / generationLength);
-//				//System.out.println("this.XAxisVal = " + (this.XAxisVal - (generationLengthLimit % generationLength)));
-//			}
-//		}
-//		//System.out.println("XAxis length is " + this.XAxisVal);
-//	}
-
-	
 }
