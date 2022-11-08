@@ -22,20 +22,19 @@ public class EvolutionComponent extends JComponent{
 	Population population;
 	private int generationLength;
 	
-	
-	//------
-	private int domainMultiplier = 10;
-	//------
+	private int domainMultiplier;
 
 
 	public EvolutionComponent(Population population) {
 		this.population = population;
 		this.generationLength = 100;
+		this.domainMultiplier = XAxisVal / generationLength;
 		linesetUp();
 	}
 	public EvolutionComponent(Population population, int generationLength) {
 		this.population = population;
 		this.generationLength = generationLength;
+		this.domainMultiplier = XAxisVal / generationLength;
 		linesetUp();
 	}
 	
@@ -190,12 +189,12 @@ public class EvolutionComponent extends JComponent{
 	}
 
 
-	public void setNewGraphWithGenerationLength(int generationLength) {
-//		population.resetGenerarions();
-//		System.out.println("new Graph created with new generation length: "+ generationLength);
-		this.repaint();
-		// TODO Auto-generated method stub
-	}
+//	public void setNewGraphWithGenerationLength(int generationLength) {
+////		population.resetGenerarions();
+////		System.out.println("new Graph created with new generation length: "+ generationLength);
+//		this.repaint();
+//		// TODO Auto-generated method stub
+//	}
 	
 	
 //	domainMuliplier = XAxisVal / 100; // 100 is default generationLength
