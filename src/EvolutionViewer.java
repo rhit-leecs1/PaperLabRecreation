@@ -78,6 +78,7 @@ public class EvolutionViewer {
   					generations--;
   					population.truncate();
       				ec.updatePop(population);
+      				ec.updateGenerations(generations);
   					ec.repaint();
   					System.out.println("ec repaint");
   					pv.updatePop(population);

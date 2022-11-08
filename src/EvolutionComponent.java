@@ -30,10 +30,14 @@ public class EvolutionComponent extends JComponent{
 	public int numTicks;
 	private Population population;
 	private int generations;
+	private int curGenerationsLeft;
+	private boolean newLinesDrawn;
 	
 	public EvolutionComponent(Population population) {
 		this.population = population;
 		this.generations = DEFAULT_GENERATIONS;
+		this.curGenerationsLeft = DEFAULT_GENERATIONS;
+		this.newLinesDrawn = false;
 		this.deltaX = X_AXIS_WIDTH / generations;
 		this.bestLines = new ArrayList<Line2D>();
 		this.avgLines = new ArrayList<Line2D>();
@@ -50,11 +54,11 @@ public class EvolutionComponent extends JComponent{
 	
 	@Override
 	protected void paintComponent(Graphics g) {
+		System.out.println("paintComponent called, bestLines.size() == "+bestLines.size());
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		updateAllLines();
 		drawAll(g2);
-		System.out.println("painted component");
 	}
 	public void drawAll(Graphics2D g2) {
 		drawLines(g2);
@@ -87,19 +91,21 @@ public class EvolutionComponent extends JComponent{
 	}
 	
 	public void updateAllLines() {
-		updateLines(bestLines);
-		updateLines(avgLines);
-		updateLines(worstLines);
+		if (!newLinesDrawn) {
+			updateLines(bestLines);
+			updateLines(avgLines);
+			updateLines(worstLines);
+			this.newLinesDrawn = true;
+		}
 	}
 
 	private void updateLines(ArrayList<Line2D> lines) {
-		int startLineIndex = lines.size() - 1;
-		int endLineIndex = lines.size();
-		Line2D startLine = lines.get(startLineIndex);
+		Line2D startLine = lines.get(lines.size() - 1);
+//		System.out.println("generations: "+(generations)+", curGenerationsLeft: "+curGenerationsLeft+", lines.size(): "+lines.size());
 
-		double x1 = ORIGIN_X + (startLineIndex * deltaX);
+		double x1 = ORIGIN_X + ((generations-curGenerationsLeft) * deltaX);
 		double y1 = startLine.getY2();
-		double x2 = ORIGIN_X + (endLineIndex * deltaX);
+		double x2 = ORIGIN_X + ((generations-curGenerationsLeft+1) * deltaX);
 		double y2;
 		
 		if (lines.equals(bestLines)) {
@@ -151,6 +157,9 @@ public class EvolutionComponent extends JComponent{
 			g2.drawLine(ORIGIN_X+i, ORIGIN_Y-5, ORIGIN_X+i, ORIGIN_Y+5);
 		}
 		g2.drawLine(ORIGIN_X+X_AXIS_WIDTH, ORIGIN_Y-5, ORIGIN_X+ X_AXIS_WIDTH, ORIGIN_Y+5);
-		
+	}
+	public void updateGenerations(int generationsLeft) {
+		this.curGenerationsLeft = generationsLeft;
+		this.newLinesDrawn = false;
 	}
 }
