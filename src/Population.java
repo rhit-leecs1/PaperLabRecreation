@@ -7,6 +7,8 @@ public class Population {
     private Individual[] chromosomes;
     private final int SIZE = 100;
     private double mRate;
+    private boolean crossoverBool;
+    public int elitismNum;
     public Population() 
     {
     	this.chromosomes = new Individual[SIZE];
@@ -14,6 +16,8 @@ public class Population {
     		this.chromosomes[i] = new Individual();
     	}
     	mRate = .01;
+    	crossoverBool=false;
+    	elitismNum = 0;
 	}
     public int getBestFitness()
     {
@@ -44,7 +48,9 @@ public class Population {
     	for (int i = 0; i < SIZE; i++) {
     		this.chromosomes[i] = new Individual(r);
     	}
+    	crossoverBool=false;
     	mRate = .01;
+    	elitismNum = 0;
 	}
     public Population(double mRate) 
     {
@@ -53,6 +59,8 @@ public class Population {
     		this.chromosomes[i] = new Individual();
     	}
     	this.mRate = mRate;
+    	crossoverBool=false;
+    	elitismNum = 0;
 	}
 
     public Population(long seed, double mRate) 
@@ -65,6 +73,8 @@ public class Population {
     		this.chromosomes[i] = new Individual(r);
     	}
     	this.mRate = mRate;
+    	crossoverBool=false;
+    	elitismNum = 0;
 	}
 
 
@@ -103,41 +113,51 @@ public class Population {
     public void truncate()
     {
     	this.sort();
-    	for (int i = 0; i < SIZE/2; i++) {
+    	for (int i = elitismNum; i < SIZE/2; i++) {
     		Individual cur = this.chromosomes[i];
-//    		System.out.println(chromosomes[i]);
-//    		System.out.println(cur.getBinString())
     	    this.chromosomes[i] = new Individual(100,cur.getBinString());
     	    this.chromosomes[i+SIZE/2] = new Individual(100,cur.getBinString());
+    	    if(crossoverBool)
+    	    {
+    	    	doCrossover();
+    	    }
     	    chromosomes[i].mutate(mRate);
     	    chromosomes[i+SIZE/2].mutate(mRate);
     	}
     	this.sort();
     }
-    public void sort() 
+    
+    public Individual[] doOneCrossover(Individual one, Individual two)
+    {
+    	Individual newOne = new Individual(100, "" + one.getBinString().substring(0,50) + two.getBinString().substring(50));
+    	Individual newTwo = new Individual(100, "" + two.getBinString().substring(0,50) + one.getBinString().substring(50));
+    	Individual[] offspring = {one, two};
+    	return offspring;
+    }
+    public void doCrossover()
+    {
+    	for(int i = elitismNum; i < SIZE; i+=2)
+    	{
+    		Individual[] offspring = doOneCrossover(chromosomes[i], chromosomes[i+1]);
+			chromosomes[i] = offspring[0];
+			chromosomes[i+1] = offspring[1];
+    	}
+    }
+    public void setElitismNum(int elitismNum)
+    {
+    	this.elitismNum=elitismNum;
+    }
+    public void sort()
     {
 //    	System.out.println(this.chromosomes);
     	Arrays.sort(this.chromosomes);
 //    	System.out.println(this.chromosomes);
     }
     
-    // individual1.getFitness()
+    
     public String toString()
     {
     	String s = "";
-//    	int cnt = 0;
-//    	for(int r = 0; r < 100; r+=(chromosomes.length==100?10:4))
-//    	{
-//    		s+="[ ";
-//	    	for(int i = r+0; i < chromosomes.length; i++)
-//	    	{
-//	    		s+="(" + cnt + ", ";
-//	    		s += chromosomes[i] + ") ";
-//	    		cnt++;
-//	    	}
-//	    	s+="]\n";
-//    	}
-    	
     	int cnt = 0;
 	    	for(Individual i : chromosomes)
 	    	{
@@ -152,5 +172,9 @@ public class Population {
     public void setMutationRate(double mRate)
     {
     	this.mRate=mRate;
+    }
+    public void setCrossoverBool(boolean b)
+    {
+    	crossoverBool=b;
     }
 }
