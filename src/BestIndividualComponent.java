@@ -16,6 +16,7 @@ public class BestIndividualComponent extends JComponent{
     	Graphics2D g2d = (Graphics2D)(g);
     	best.drawOn(g2d);
     }
+    //update each time timer goes
     public void updateBest(Individual best)
     {
     	this.best = best;
