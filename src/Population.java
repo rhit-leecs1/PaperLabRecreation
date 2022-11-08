@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -129,11 +130,29 @@ public class Population {
     }
     public void rouletteWheelSelection()
     {
+    	sort();
     	double totalFitness = 0.0;
-    	
+    	double[] proportions = new double[SIZE];
     	for(Individual v : chromosomes)
     	{
     		totalFitness+=v.getFitness();
+    	}
+    	ArrayList<Individual> added = new ArrayList<>();
+    	outer: while(added.size() < SIZE)
+    	{
+    		for(int i = 0; i < proportions.length; i++)
+    		{
+    			if(added.size() == SIZE) break outer;
+    			proportions[i] = chromosomes[i].getFitness()/totalFitness;
+    			if(Math.random() <= proportions[i])
+    				added.add(new Individual(100,chromosomes[i].getBinString()));
+    		}
+    	}
+    	int i = 0;
+    	for(Individual v : added)
+    	{
+    		chromosomes[i] = v;
+    		i++;
     	}
     	
     }
