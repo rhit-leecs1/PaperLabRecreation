@@ -9,7 +9,7 @@ public class Population {
     private double mRate;
     private boolean crossoverBool;
     public int elitismNum;
-    public Population() 
+    public Population()
     {
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
@@ -19,27 +19,7 @@ public class Population {
     	crossoverBool=false;
     	elitismNum = 0;
 	}
-    public int getBestFitness()
-    {
-    	sort();
-    	return chromosomes[0].getFitness();
-    }
-    public Individual getBestIndividual()
-    {
-    	sort();
-    	return chromosomes[0];
-    }
-    public int getAverageFitness()
-    {
-    	sort();
-    	return chromosomes[chromosomes.length/2].getFitness();
-    }
-    public int getLeastFitness()
-    {
-    	sort();
-    	return chromosomes[chromosomes.length-1].getFitness();
-    }
-    public Population(long seed) 
+    public Population(long seed)
     {
     	this.chromosomes = new Individual[SIZE];
     	
@@ -52,7 +32,7 @@ public class Population {
     	mRate = .01;
     	elitismNum = 0;
 	}
-    public Population(double mRate) 
+    public Population(double mRate)
     {
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
@@ -76,10 +56,6 @@ public class Population {
     	crossoverBool=false;
     	elitismNum = 0;
 	}
-
-
-
-
     public void drawOn(Graphics2D g)
     {
     	for(int i = 0; i < 10; i++)
@@ -108,8 +84,59 @@ public class Population {
 	 * Terminate after a predetermined number of generations
      */
 	
-
-    
+    public int getBestFitness()
+    {
+    	sort();
+    	return chromosomes[0].getFitness();
+    }
+    public Individual getBestIndividual()
+    {
+    	sort();
+    	return chromosomes[0];
+    }
+    public int getAverageFitness()
+    {
+    	sort();
+    	return chromosomes[chromosomes.length/2].getFitness();
+    }
+    public int getLeastFitness()
+    {
+    	sort();
+    	return chromosomes[chromosomes.length-1].getFitness();
+    }
+    public int getHammingDistance(String one, String two)
+    {
+    	int cnt = 0;
+    	for(int i = 0; i < one.length(); i++)
+    	{
+    		if(one.charAt(i) != two.charAt(i))
+    			cnt++;
+    	}
+    	return cnt;
+    }
+    public double getAverageHammingDistance()
+    {
+    	double sum = 0.0;
+    	for(Individual v : chromosomes)
+    	{
+    		for(Individual two : chromosomes)
+    		{
+    			sum+=getHammingDistance(v.getBinString(),two.getBinString());
+    		}
+    	}
+    	int numPairs = chromosomes.length*(chromosomes.length-1)/2;
+    	return sum/numPairs;
+    }
+    public void rouletteWheelSelection()
+    {
+    	double totalFitness = 0.0;
+    	
+    	for(Individual v : chromosomes)
+    	{
+    		totalFitness+=v.getFitness();
+    	}
+    	
+    }
     public void truncate()
     {
     	this.sort();
@@ -149,9 +176,7 @@ public class Population {
     }
     public void sort()
     {
-//    	System.out.println(this.chromosomes);
     	Arrays.sort(this.chromosomes);
-//    	System.out.println(this.chromosomes);
     }
     
     

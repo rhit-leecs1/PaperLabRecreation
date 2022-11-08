@@ -12,7 +12,6 @@ public class PopulationComponent extends JComponent{
     @Override
     public void paintComponent(Graphics g)
     {
-//    	System.out.println("run");
     	Graphics2D g2d = (Graphics2D)(g);
     	p.drawOn(g2d);
     }

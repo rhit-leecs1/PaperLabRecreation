@@ -85,6 +85,7 @@ public class EvolutionViewer {
   					biv.updateBest(population.getBestIndividual());
   					genCntLabel.setText("Generation " + (100-generations) + "     ");
   					System.out.println("Generation " + (100-generations));
+  					System.out.println("diverstiy: " + population.getAverageHammingDistance());
   					System.out.println(population);
   				}
   			}
