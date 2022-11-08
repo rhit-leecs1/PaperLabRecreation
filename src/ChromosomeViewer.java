@@ -4,11 +4,21 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-
+/**
+ * Class: BestIndividualViewer
+ * @author kangd2 & leecs1
+ * <br>Purpose: Used to create a frame to draw a BestIndividualComponent
+ * <br>For example: 
+ * <pre>
+ *    BestIndividualViewer bestIndividualViewer = new BestIndividualViewer(best);
+ * </pre>
+ */
 public class ChromosomeViewer {
+	
 	private JLabel filePath;
 	private int size;
 	private Individual chromosome;
+	
 	public void runChromosomeViewer() {
 		// initializing frame to the wanted size
 		JFrame frame = new JFrame();
