@@ -6,15 +6,23 @@ import javax.swing.*;
 public class Population {
     private Individual[] chromosomes;
     private final int SIZE = 100;
-
+    private double mRate;
     public Population() 
     {
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
     		this.chromosomes[i] = new Individual();
     	}
+    	mRate = .01;
 	}
-
+    public int getBestFitness()
+    {
+    	return chromosomes[0].getFitness();
+    }
+    public int getLeastFitness()
+    {
+    	return chromosomes[chromosomes.length-1].getFitness();
+    }
     public Population(long seed) 
     {
     	this.chromosomes = new Individual[SIZE];
@@ -24,6 +32,27 @@ public class Population {
     	for (int i = 0; i < SIZE; i++) {
     		this.chromosomes[i] = new Individual(r);
     	}
+    	mRate = .01;
+	}
+    public Population(double mRate) 
+    {
+    	this.chromosomes = new Individual[SIZE];
+    	for (int i = 0; i < SIZE; i++) {
+    		this.chromosomes[i] = new Individual();
+    	}
+    	this.mRate = mRate;
+	}
+
+    public Population(long seed, double mRate) 
+    {
+    	this.chromosomes = new Individual[SIZE];
+    	
+		Random r = new Random(seed);
+
+    	for (int i = 0; i < SIZE; i++) {
+    		this.chromosomes[i] = new Individual(r);
+    	}
+    	this.mRate = mRate;
 	}
 
 
@@ -53,14 +82,19 @@ public class Population {
 	
 
     
-    public void truncate(double mutationRate)
+    public void truncate()
     {
     	this.sort();
     	for (int i = 0; i < SIZE/2; i++) {
     		Individual cur = this.chromosomes[i];
-    	    this.chromosomes[i] = cur.mutateIndividual(mutationRate);
-    	    this.chromosomes[i+(SIZE/2)] = cur.mutateIndividual(mutationRate);
+//    		System.out.println(chromosomes[i]);
+//    		System.out.println(cur.getBinString())
+    	    this.chromosomes[i] = new Individual(100,cur.getBinString());
+    	    this.chromosomes[i+SIZE/2] = new Individual(100,cur.getBinString());
+    	    chromosomes[i].mutate(mRate);
+    	    chromosomes[i+SIZE/2].mutate(mRate);
     	}
+    	this.sort();
     }
     public void sort() 
     {
@@ -96,5 +130,9 @@ public class Population {
     	System.out.println("(cnt: " + cnt + ")");
     	
     	return s;
+    }
+    public void setMutationRate(double mRate)
+    {
+    	this.mRate=mRate;
     }
 }

@@ -4,10 +4,19 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class EvolutionViewer {
 	private int size = 100;
 	private Population population;
+	private Timer timer;
+	private int generations;
+	private JButton simulationButton;
+	public EvolutionViewer()
+	{
+		population = new Population();
+		generations = 100;
+	}
 	public void runEvolutionViewer() {
 		// initializing frame to the wanted size
 		JFrame frame = new JFrame();
@@ -73,7 +82,7 @@ public class EvolutionViewer {
 		elitismLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		JTextField elitismTextField = new JTextField("0", 5);
 		
-		JButton simulationButton = new JButton("Start Evolution");
+		simulationButton = new JButton("Start Evolution");
 		simulationButton.setFont(new Font("Times New Roman", Font.BOLD, 16));
 
 		bottomPanel.add(mutationRateLabel);
@@ -92,38 +101,85 @@ public class EvolutionViewer {
 		bottomPanel.add(elitismTextField);
 		bottomPanel.add(simulationButton);
 		
-		
+		timer = new Timer(100, new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if(population.getBestFitness() == 100)
+				{
+					timer.stop();
+					simulationButton.setEnabled(false);
+				}
+					
+				if(generations==0)
+				{
+					timer.stop();
+					simulationButton.setEnabled(false);
+				}
+				else
+				{
+					
+					generations--;
+					population.truncate();
+					System.out.println(population);
+				}
+			}
+		});
 		
 		
 
 		class SimulationButtonListener implements ActionListener{
-			
+			private String state;
+			public SimulationButtonListener()
+			{
+				state = "start";
+			}
 		    public void actionPerformed(ActionEvent e){
 		    	System.out.println("clicked");
-		    	
-				String mRateNumeratorStr = mutationRateTextField.getText();
-				Action selectionAction = selectionList.getAction();
-				boolean crossoverBool = crossoverCheckBox.isSelected();
-				String populationSizeStr = populationSizeTextField.getText();
-				String generationsStr = generationsTextField.getText();
-				String genomeLengthStr = genomeLengthTextField.getText();
-				String elitismStr = elitismTextField.getText();
-				try {
-					double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * size);
-					
-					
-//					System.out.println("mRateNumberatorStr: "+mRateNumeratorStr);
-//					System.out.println("mRate: "+mRate);
-//					System.out.println("selection: "+selectionAction);
-//					System.out.println("crossoverBool : "+crossoverBool);
-//					System.out.println("populationSizeStr: "+populationSizeStr);
-//					System.out.println("generationsStr: "+generationsStr);
-//					System.out.println("genomeLengthStr: "+genomeLengthStr);
-//					System.out.println("elitismStr: "+elitismStr);
-
-				} catch (Exception error) {
-					System.err.println("Invalid input");
-				}
+		    	if(state.equals("start"))
+		    	{
+		    		String mRateNumeratorStr = mutationRateTextField.getText();
+					Action selectionAction = selectionList.getAction();
+					boolean crossoverBool = crossoverCheckBox.isSelected();
+					String populationSizeStr = populationSizeTextField.getText();
+					String generationsStr = generationsTextField.getText();
+					String genomeLengthStr = genomeLengthTextField.getText();
+					String elitismStr = elitismTextField.getText();
+					try
+					{
+						
+						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * size);
+						population.setMutationRate(mRate);
+						generations = Integer.parseInt(generationsStr);
+						state = "started";
+						simulationButton.setText("Pause");
+						timer.start();
+//						System.out.println("mRateNumberatorStr: "+mRateNumeratorStr);
+//						System.out.println("mRate: "+mRate);
+//						System.out.println("selection: "+selectionAction);
+//						System.out.println("crossoverBool : "+crossoverBool);
+//						System.out.println("populationSizeStr: "+populationSizeStr);
+//						System.out.println("generationsStr: "+generationsStr);
+//						System.out.println("genomeLengthStr: "+genomeLengthStr);
+//						System.out.println("elitismStr: "+elitismStr);
+					}
+					catch (Exception error)
+					{
+						System.err.println("Invalid input");
+					}
+		    	}
+		    	else if(state.equals("started") || state.equals("resumed"))
+		    	{
+		    		state = "paused";
+		    		timer.stop();
+		    		simulationButton.setText("Resume");
+		    	}
+		    	else
+		    	{
+		    		state = "resumed";
+		    		timer.start();
+		    		simulationButton.setText("Pause");
+		    	}
+				
 		    }
 		}
 		simulationButton.addActionListener(new SimulationButtonListener());

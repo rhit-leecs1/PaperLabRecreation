@@ -1,11 +1,11 @@
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
-public class Gene extends JButton{
+public class GeneButton extends JButton{
     private boolean bin;
     private Color color;
     private int num;
-    public Gene(int num)
+    public GeneButton(int num)
     {
     	super(""+ num);
     	bin = (int)Math.round(Math.random()) == 0 ? false : true;
@@ -27,9 +27,9 @@ public class Gene extends JButton{
     	this.setPreferredSize(d);
     	this.setMaximumSize(d);
     }
-    public Gene(int num, Random r) {
+    public GeneButton(int num, Random r) {
     	super(""+ num);
-    	bin = (int)Math.round(r.nextDouble()) == 0 ? false : true;
+    	bin = (int)Math.round(r.nextDouble()-.45) == 0 ? false : true;
     	if(!bin)
     	{
     		color = Color.black;
@@ -48,10 +48,10 @@ public class Gene extends JButton{
     	this.setPreferredSize(d);
     	this.setMaximumSize(d);
 	}
-    public Gene(int num, boolean bin)
+    public GeneButton(int num, boolean bin)
     {
     	super(""+ num);
-    	bin = bin;
+    	this.bin = bin;
     	if(!bin)
     	{
     		color = Color.black;

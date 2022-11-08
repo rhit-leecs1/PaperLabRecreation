@@ -6,47 +6,48 @@ import java.util.Random;
 
 import javax.swing.*;
 public class Individual implements Comparable {
-    private Gene[] genes;
+    private GeneButton[] genes;
     public Individual()
     {
-    	genes = new Gene[100];
+    	genes = new GeneButton[100];
 		for(int c = 0; c < genes.length; c++)
 		{
-			genes[c] = new Gene(c);
+			genes[c] = new GeneButton(c);
 		}
     }
     public Individual(Random r) {
-    	genes = new Gene[100];
+    	genes = new GeneButton[100];
 		for(int c = 0; c < genes.length; c++)
 		{
-			genes[c] = new Gene(c, r);
+			genes[c] = new GeneButton(c, r);
+			
 		}
 	}
     
     public Individual(int size)
     {
     	if(size == 20)
-    		genes = new Gene[20];
+    		genes = new GeneButton[20];
     	else if(size == 100)
-    		genes = new Gene[100];
+    		genes = new GeneButton[100];
     	else
     		System.err.println("Error: Invalid Chromosome Size");
 		for(int c = 0; c < genes.length; c++)
 		{
-			genes[c] = new Gene(c);
+			genes[c] = new GeneButton(c);
 		}
     	
     }
     public Individual(int size, String geneStr)
     {
     	if(size == 20)
-    		genes = new Gene[20];
+    		genes = new GeneButton[20];
     	else if(size == 100)
-    		genes = new Gene[100];
+    		genes = new GeneButton[100];
 		for(int c = 0; c < genes.length; c++)
 		{
 //    		System.out.println(r + ","+c + ":"+geneStr.charAt(r*(genes.length-1) + c));
-			genes[c] = new Gene(c, geneStr.charAt(c)=='0'?false:true);
+			genes[c] = new GeneButton(c, geneStr.charAt(c)=='0'?false:true);
 		}
     	
     }
@@ -59,10 +60,11 @@ public class Individual implements Comparable {
     }
     public void mutate(double mRate)
     {
-		for(Gene g : genes)
+		for(GeneButton g : genes)
 		{
 			if(Math.random()*100 <= (mRate*100))
 				g.flipBit();
+			
 		}
     }
     public Individual mutateIndividual(double mRate)
@@ -78,10 +80,10 @@ public class Individual implements Comparable {
     	{
     		public void actionPerformed(ActionEvent e)
     		{
-    			((Gene)e.getSource()).flipBit();
+    			((GeneButton)e.getSource()).flipBit();
     		}
     	}
-		for(Gene g : genes)
+		for(GeneButton g : genes)
 		{
 			g.addActionListener(new GeneButtonListener());
     		}
@@ -89,7 +91,7 @@ public class Individual implements Comparable {
     public String getBinString()
     {
     	String s = "";
-		for(Gene g : genes)
+		for(GeneButton g : genes)
 		{
 			s+=g.getBin();
 		}
@@ -111,7 +113,7 @@ public class Individual implements Comparable {
     public int getFitness()
     {
     	int sum = 0;
-    	for(Gene g : genes)
+    	for(GeneButton g : genes)
     	{
     		sum+=g.getBin();
     	}
