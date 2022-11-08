@@ -7,18 +7,23 @@ import javax.swing.*;
 import javax.swing.Timer;
 
 public class EvolutionViewer {
+	private final int terminateAtFitness = 90;
+	private boolean terminateOn;
 	private int size = 100;
 	private Population population;
 	private Timer timer;
 	private int generations;
 	private JButton simulationButton;
 	private EvolutionComponent ec;
+	private JLabel genCntLabel;
 	public EvolutionViewer()
 	{
 		
 		population = new Population();
 		ec = new EvolutionComponent(population);
 		generations = 100;
+		terminateOn = false;
+		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
 	}
 	public void runEvolutionViewer() {
 		// initializing frame to the wanted size
@@ -32,10 +37,12 @@ public class EvolutionViewer {
 		JLabel graphTitle = new JLabel("Fitness Over Generations", SwingConstants.CENTER);
 		graphTitle.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		frame.add(graphTitle, BorderLayout.NORTH);
-
-		// graph
+		frame.add(genCntLabel, BorderLayout.EAST);
 		
+		
+		// graph
 		frame.add(ec, BorderLayout.CENTER);
+		
 //		ec.paintComponent(g);
 		
 //		Dimension graphPanelD = new Dimension(300, 300);
@@ -82,6 +89,11 @@ public class EvolutionViewer {
 		generationsLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		JTextField generationsTextField = new JTextField("1", 5);
 
+		JLabel terminateLabel = new JLabel("Terminal Fitness 90?", SwingConstants.CENTER);
+		terminateLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
+		JCheckBox terminateCheckBox = new JCheckBox();
+		terminateCheckBox.setBounds(20,20,20,20);
+		
 		JLabel genomeLengthLabel = new JLabel("Genome Length", SwingConstants.CENTER);
 		genomeLengthLabel.setFont(new Font("Times New Roman", Font.BOLD, 16));
 		JTextField genomeLengthTextField = new JTextField("100", 5);
@@ -103,6 +115,8 @@ public class EvolutionViewer {
 		bottomPanel.add(populationSizeTextField);
 		bottomPanel.add(generationsLabel);
 		bottomPanel.add(generationsTextField);
+		bottomPanel.add(terminateLabel);
+		bottomPanel.add(terminateCheckBox);		
 		bottomPanel.add(genomeLengthLabel);
 		bottomPanel.add(genomeLengthTextField);
 		bottomPanel.add(elitismLabel);
@@ -112,7 +126,7 @@ public class EvolutionViewer {
 		timer = new Timer(100, new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				if(population.getBestFitness() == 100)
+				if(terminateOn && population.getBestFitness() == terminateAtFitness)
 				{
 					timer.stop();
 					simulationButton.setEnabled(false);
@@ -132,7 +146,8 @@ public class EvolutionViewer {
 					pv.updatePop(population);
 					
 					biv.updateBest(population.getBestIndividual());
-					
+					genCntLabel.setText("Generation " + (100-generations) + "     ");
+					System.out.println("Generation " + (100-generations));
 					System.out.println(population);
 				}
 			}
@@ -153,16 +168,17 @@ public class EvolutionViewer {
 		    		String mRateNumeratorStr = mutationRateTextField.getText();
 					Action selectionAction = selectionList.getAction();
 					boolean crossoverBool = crossoverCheckBox.isSelected();
+					boolean terminateBool = terminateCheckBox.isSelected();
 					String populationSizeStr = populationSizeTextField.getText();
 					String generationsStr = generationsTextField.getText();
 					String genomeLengthStr = genomeLengthTextField.getText();
 					String elitismStr = elitismTextField.getText();
 					try
 					{
-						
 						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * size);
 						population.setMutationRate(mRate);
 						generations = Integer.parseInt(generationsStr);
+						terminateOn = terminateBool;
 						state = "started";
 						simulationButton.setText("Pause");
 						timer.start();
