@@ -48,6 +48,9 @@ public class EvolutionViewer {
 		PopulationViewer pv = new PopulationViewer(population);
         pv.runPopulationViewer();
 		
+        //best individual viewer
+        BestIndividualViewer biv = new BestIndividualViewer(population.getBestIndividual());
+        biv.runBestIndividualViewer();
 		
 
 		// last panel with all other components
@@ -127,6 +130,9 @@ public class EvolutionViewer {
 //					ec.updatePop(population);
 					ec.repaint();
 					pv.updatePop(population);
+					
+					biv.updateBest(population.getBestIndividual());
+					
 					System.out.println(population);
 				}
 			}

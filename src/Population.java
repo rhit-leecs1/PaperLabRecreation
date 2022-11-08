@@ -20,6 +20,11 @@ public class Population {
     	sort();
     	return chromosomes[0].getFitness();
     }
+    public Individual getBestIndividual()
+    {
+    	sort();
+    	return chromosomes[0];
+    }
     public int getAverageFitness()
     {
     	sort();

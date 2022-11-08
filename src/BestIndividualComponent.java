@@ -1,9 +1,23 @@
 import java.awt.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.*;
 public class BestIndividualComponent extends JComponent{
-    public void paintComponent(Graphics g){
-        
+    private Individual best;
+    public BestIndividualComponent(Individual best)
+    {
+    	this.best = best;
     }
-    
+    @Override
+    public void paintComponent(Graphics g)
+    {
+//    	System.out.println("run");
+    	Graphics2D g2d = (Graphics2D)(g);
+    	best.drawOn(g2d);
+    }
+    public void updateBest(Individual best)
+    {
+    	this.best = best;
+    }
 }
