@@ -8,7 +8,7 @@ import javax.swing.Timer;
 
 public class EvolutionViewer {
 	
-	private final static int DEFAULT_FRAME_X = 1500;
+	private final static int DEFAULT_FRAME_X = 1700;
 	private final static int DEFAULT_FRAME_Y = 700;
 
 	private final static int TERMINATE_AT_FITNESS = 90;
@@ -99,10 +99,10 @@ public class EvolutionViewer {
         
 		// last panel with all other components
 		JPanel bottomPanel = new JPanel();
-		JPanel topButtonPanel = new JPanel();
-		JPanel bottomButtonPanel = new JPanel();
-		bottomPanel.add(topButtonPanel,BorderLayout.NORTH);
-		bottomPanel.add(bottomButtonPanel,BorderLayout.SOUTH);
+//		JPanel topButtonPanel = new JPanel();
+//		JPanel bottomButtonPanel = new JPanel();
+//		bottomPanel.add(topButtonPanel,BorderLayout.NORTH);
+//		bottomPanel.add(bottomButtonPanel,BorderLayout.SOUTH);
 		frame.add(bottomPanel, BorderLayout.SOUTH);
 		
 
@@ -146,33 +146,63 @@ public class EvolutionViewer {
 		
 		simulationButton = new JButton("Start Evolution");
 		simulationButton.setFont(DEFAULT_FONT);
-		
-		bottomButtonPanel.add(mutationRateLabel);
-		bottomButtonPanel.add(mutationRateTextField);
-		bottomButtonPanel.add(selectionLabel);
-		bottomButtonPanel.add(selectionList);
-		bottomButtonPanel.add(crossoverLabel);
-		bottomButtonPanel.add(crossoverCheckBox);
-		bottomButtonPanel.add(populationSizeLabel);
-		bottomButtonPanel.add(populationSizeTextField);
-		bottomButtonPanel.add(generationsLabel);
-		bottomButtonPanel.add(generationsTextField);
-		bottomButtonPanel.add(terminateLabel);
-		bottomButtonPanel.add(terminateCheckBox);		
-		bottomButtonPanel.add(genomeLengthLabel);
-		bottomButtonPanel.add(genomeLengthTextField);
-		bottomButtonPanel.add(elitismLabel);
-		bottomButtonPanel.add(elitismTextField);
-		bottomButtonPanel.add(simulationButton);
-		
+
+//		bottomButtonPanel.add(mutationRateLabel);
+//		bottomButtonPanel.add(mutationRateTextField);
+//		bottomButtonPanel.add(selectionLabel);
+//		bottomButtonPanel.add(selectionList);
+//		bottomButtonPanel.add(crossoverLabel);
+//		bottomButtonPanel.add(crossoverCheckBox);
+//		bottomButtonPanel.add(populationSizeLabel);
+//		bottomButtonPanel.add(populationSizeTextField);
+//		bottomButtonPanel.add(generationsLabel);
+//		bottomButtonPanel.add(generationsTextField);
+//		bottomButtonPanel.add(terminateLabel);
+//		bottomButtonPanel.add(terminateCheckBox);		
+//		bottomButtonPanel.add(genomeLengthLabel);
+//		bottomButtonPanel.add(genomeLengthTextField);
+//		bottomButtonPanel.add(elitismLabel);
+//		bottomButtonPanel.add(elitismTextField);
+//		bottomButtonPanel.add(simulationButton);
+
 		JLabel fitnessTypeLabel = new JLabel("Selection", SwingConstants.CENTER);
 		fitnessTypeLabel.setFont(DEFAULT_FONT);
 		String[] fitnessTypes = {"basic","target","1010pattern"};
 		JComboBox fitnessTypesList = new JComboBox(fitnessTypes);
 		fitnessTypesList.setSelectedIndex(0);
 		
-		topButtonPanel.add(fitnessTypeLabel);
-		topButtonPanel.add(fitnessTypesList);
+		bottomPanel.add(mutationRateLabel);
+		bottomPanel.add(mutationRateTextField);
+		
+		bottomPanel.add(fitnessTypeLabel);
+		bottomPanel.add(fitnessTypesList);
+		
+		bottomPanel.add(selectionLabel);
+		bottomPanel.add(selectionList);
+		bottomPanel.add(crossoverLabel);
+		bottomPanel.add(crossoverCheckBox);
+		bottomPanel.add(populationSizeLabel);
+		bottomPanel.add(populationSizeTextField);
+		bottomPanel.add(generationsLabel);
+		bottomPanel.add(generationsTextField);
+		bottomPanel.add(terminateLabel);
+		bottomPanel.add(terminateCheckBox);		
+		bottomPanel.add(genomeLengthLabel);
+		bottomPanel.add(genomeLengthTextField);
+		bottomPanel.add(elitismLabel);
+		bottomPanel.add(elitismTextField);
+		bottomPanel.add(simulationButton);
+		
+//		JLabel fitnessTypeLabel = new JLabel("Selection", SwingConstants.CENTER);
+//		fitnessTypeLabel.setFont(DEFAULT_FONT);
+//		String[] fitnessTypes = {"basic","target","1010pattern"};
+//		JComboBox fitnessTypesList = new JComboBox(fitnessTypes);
+//		fitnessTypesList.setSelectedIndex(0);
+//		
+//		topButtonPanel.add(fitnessTypeLabel);
+//		topButtonPanel.add(fitnessTypesList);
+		
+		
 		
 		
 		
