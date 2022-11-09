@@ -156,6 +156,10 @@ public class ChromosomeViewer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
+	public String getTargetChromosome()
+	{
+		return chromosome.getBinString();
+	}
 
 }
 

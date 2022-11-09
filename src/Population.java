@@ -9,9 +9,13 @@ public class Population {
     private final int SIZE = 100;
     private double mRate;
     private boolean crossoverBool;
-    public int elitismNum;
+    private int elitismNum;
+    private String fitnessType;
+    private String targetChromosome;
     public Population()
     {
+    	fitnessType = "basic";
+    	targetChromosome = "";
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
     		this.chromosomes[i] = new Individual();
@@ -22,6 +26,8 @@ public class Population {
 	}
     public Population(long seed)
     {
+    	fitnessType = "basic";
+    	targetChromosome = "";
     	this.chromosomes = new Individual[SIZE];
     	
 		Random r = new Random(seed);
@@ -35,6 +41,8 @@ public class Population {
 	}
     public Population(double mRate)
     {
+    	fitnessType = "basic";
+    	targetChromosome = "";
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
     		this.chromosomes[i] = new Individual();
@@ -46,6 +54,8 @@ public class Population {
 
     public Population(long seed, double mRate) 
     {
+    	fitnessType = "basic";
+    	targetChromosome = "";
     	this.chromosomes = new Individual[SIZE];
     	
 		Random r = new Random(seed);
@@ -128,6 +138,46 @@ public class Population {
     	int numPairs = chromosomes.length*(chromosomes.length-1)/2;
     	return sum/numPairs;
     }
+    public void setFitnessType(String str)
+    {
+    	for(Individual v : chromosomes)
+    	{
+    		v.setFitnessType(str);
+    	}
+    }
+    public void setTargetChromosome(String str)
+    {
+    	for(Individual v : chromosomes)
+    	{
+    		v.setTargetChromosome(str);
+    	}
+    }
+    public void rankSelection()
+    {
+    	double weightTotal = 0.0;
+    	for(int i = 0; i < SIZE; i++)
+    	{
+    		weightTotal+=(100-i);
+    	}
+    	ArrayList<Individual> added = new ArrayList<>();
+    	outer: while(added.size() < SIZE)
+    	{
+    		for(int i = 0; i < SIZE; i++)
+    		{
+    			if(added.size() == SIZE) break outer;
+    			double proportion = (100-i)/weightTotal;
+    			if(Math.random() <= proportion)
+    				added.add(new Individual(100,chromosomes[i].getBinString()));
+    		}
+    	}
+    	int i = 0;
+    	for(Individual v : added)
+    	{
+    		chromosomes[i] = v;
+    		chromosomes[i].mutate(mRate);
+    		i++;
+    	}
+    }
     public void rouletteWheelSelection()
     {
     	sort();
@@ -152,9 +202,9 @@ public class Population {
     	for(Individual v : added)
     	{
     		chromosomes[i] = v;
+    		chromosomes[i].mutate(mRate);
     		i++;
     	}
-    	
     }
     public void truncate()
     {

@@ -7,8 +7,11 @@ import java.util.Random;
 import javax.swing.*;
 public class Individual implements Comparable {
     private GeneButton[] genes;
+    private String fitnessType;
+    private String targetChromosome;
     public Individual()
     {
+    	fitnessType = "basic";
     	genes = new GeneButton[100];
 		for(int c = 0; c < genes.length; c++)
 		{
@@ -16,6 +19,7 @@ public class Individual implements Comparable {
 		}
     }
     public Individual(Random r) {
+    	fitnessType = "basic";
     	genes = new GeneButton[100];
 		for(int c = 0; c < genes.length; c++)
 		{
@@ -26,6 +30,7 @@ public class Individual implements Comparable {
     
     public Individual(int size)
     {
+    	fitnessType = "basic";
     	if(size == 20)
     		genes = new GeneButton[20];
     	else if(size == 100)
@@ -40,6 +45,7 @@ public class Individual implements Comparable {
     }
     public Individual(int size, String geneStr)
     {
+    	fitnessType = "basic";
     	if(size == 20)
     		genes = new GeneButton[20];
     	else if(size == 100)
@@ -127,6 +133,14 @@ public class Individual implements Comparable {
 		}
     	return s;
     }
+    public void setFitnessType(String str)
+    {
+    	fitnessType = str;
+    }
+    public void setTargetChromosome(String str)
+    {
+    	targetChromosome = str;
+    }
     public String toString()
     {
     	String s = "";
@@ -142,12 +156,26 @@ public class Individual implements Comparable {
     }
     public int getFitness()
     {
-    	int sum = 0;
-    	for(GeneButton g : genes)
+    	if(fitnessType.equals("target"))
     	{
-    		sum+=g.getBin();
+    		int cnt = 0;
+        	for(int i = 0; i < genes.length; i++)
+        	{
+        		if(getBinString().charAt(i) != targetChromosome.charAt(i))
+        			cnt++;
+        	}
+        	return cnt;
     	}
-    	return sum;
+    	else if(fitnessType.equals("1010pattern"))
+    	{
+    		
+    	}
+    	int sum = 0;
+		for(GeneButton g : genes)
+		{
+			sum+=g.getBin();
+		}
+		return sum; 
     }
 	@Override
 	public int compareTo(Object o) {

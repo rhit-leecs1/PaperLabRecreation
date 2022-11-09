@@ -39,6 +39,10 @@ public class EvolutionViewer {
 		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
 	}
 	public void runEvolutionViewer() {
+		// run chromosome viewer
+		ChromosomeViewer cv = new ChromosomeViewer();
+        cv.runChromosomeViewer();
+		
 		// initialize frame
 		JFrame frame = new JFrame();
 		Dimension frameD = new Dimension(DEFAULT_FRAME_X, DEFAULT_FRAME_Y);
@@ -85,7 +89,7 @@ public class EvolutionViewer {
   					biv.updateBest(population.getBestIndividual());
   					genCntLabel.setText("Generation " + (100-generations) + "     ");
   					System.out.println("Generation " + (100-generations));
-  					System.out.println("diverstiy: " + population.getAverageHammingDistance());
+  					System.out.println("diversity: " + population.getAverageHammingDistance());
   					System.out.println(population);
   				}
   			}
@@ -95,7 +99,12 @@ public class EvolutionViewer {
         
 		// last panel with all other components
 		JPanel bottomPanel = new JPanel();
+		JPanel topButtonPanel = new JPanel();
+		JPanel bottomButtonPanel = new JPanel();
+		bottomPanel.add(topButtonPanel,BorderLayout.NORTH);
+		bottomPanel.add(bottomButtonPanel,BorderLayout.SOUTH);
 		frame.add(bottomPanel, BorderLayout.SOUTH);
+		
 
 		// mutations
 		JLabel mutationRateLabel = new JLabel("Mutation Rate (N/pop)", SwingConstants.CENTER);
@@ -137,24 +146,36 @@ public class EvolutionViewer {
 		
 		simulationButton = new JButton("Start Evolution");
 		simulationButton.setFont(DEFAULT_FONT);
-
-		bottomPanel.add(mutationRateLabel);
-		bottomPanel.add(mutationRateTextField);
-		bottomPanel.add(selectionLabel);
-		bottomPanel.add(selectionList);
-		bottomPanel.add(crossoverLabel);
-		bottomPanel.add(crossoverCheckBox);
-		bottomPanel.add(populationSizeLabel);
-		bottomPanel.add(populationSizeTextField);
-		bottomPanel.add(generationsLabel);
-		bottomPanel.add(generationsTextField);
-		bottomPanel.add(terminateLabel);
-		bottomPanel.add(terminateCheckBox);		
-		bottomPanel.add(genomeLengthLabel);
-		bottomPanel.add(genomeLengthTextField);
-		bottomPanel.add(elitismLabel);
-		bottomPanel.add(elitismTextField);
-		bottomPanel.add(simulationButton);
+		
+		bottomButtonPanel.add(mutationRateLabel);
+		bottomButtonPanel.add(mutationRateTextField);
+		bottomButtonPanel.add(selectionLabel);
+		bottomButtonPanel.add(selectionList);
+		bottomButtonPanel.add(crossoverLabel);
+		bottomButtonPanel.add(crossoverCheckBox);
+		bottomButtonPanel.add(populationSizeLabel);
+		bottomButtonPanel.add(populationSizeTextField);
+		bottomButtonPanel.add(generationsLabel);
+		bottomButtonPanel.add(generationsTextField);
+		bottomButtonPanel.add(terminateLabel);
+		bottomButtonPanel.add(terminateCheckBox);		
+		bottomButtonPanel.add(genomeLengthLabel);
+		bottomButtonPanel.add(genomeLengthTextField);
+		bottomButtonPanel.add(elitismLabel);
+		bottomButtonPanel.add(elitismTextField);
+		bottomButtonPanel.add(simulationButton);
+		
+		JLabel fitnessTypeLabel = new JLabel("Selection", SwingConstants.CENTER);
+		fitnessTypeLabel.setFont(DEFAULT_FONT);
+		String[] fitnessTypes = {"basic","target","1010pattern"};
+		JComboBox fitnessTypesList = new JComboBox(fitnessTypes);
+		fitnessTypesList.setSelectedIndex(0);
+		
+		topButtonPanel.add(fitnessTypeLabel);
+		topButtonPanel.add(fitnessTypesList);
+		
+		
+		
 
 		class SimulationButtonListener implements ActionListener{
 			private String state;
@@ -174,15 +195,19 @@ public class EvolutionViewer {
 					String generationsStr = generationsTextField.getText();
 					String genomeLengthStr = genomeLengthTextField.getText();
 					String elitismStr = elitismTextField.getText();
+					Action fitnessTypeAction = fitnessTypesList.getAction();
 					try
 					{
 						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * SIZE);
-						population.setMutationRate(mRate);
 						generations = Integer.parseInt(generationsStr);
 						elitismNum = Integer.parseInt(elitismStr);
-						population.setElitismNum(elitismNum);
 						terminateOn = terminateBool;
 						crossover = crossoverBool;
+						
+						population.setFitnessType(""+fitnessTypeAction);
+						population.setTargetChromosome(cv.getTargetChromosome());
+						population.setMutationRate(mRate);
+						population.setElitismNum(elitismNum);
 						population.setCrossoverBool(crossoverBool);
 						state = "started";
 						simulationButton.setText("Pause");
