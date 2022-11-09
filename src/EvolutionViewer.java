@@ -5,7 +5,15 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
-
+/**
+ * Class: EvolutionViewer
+ * @author kangd2 & leecs1
+ * <br>Purpose: Used to create a frame to draw a BestIndividualComponent and run the population and best individual viewers
+ * <br>For example: 
+ * <pre>
+ *    EvolutionViewer evolutionViewer = new EvolutionViewer();
+ * </pre>
+ */
 public class EvolutionViewer {
 	
 	private final static int DEFAULT_FRAME_X = 1700;
@@ -15,8 +23,8 @@ public class EvolutionViewer {
 	private final static int DEFAULT_GENERATIONS = 100;
 	private final static Font DEFAULT_FONT = new Font("Times New Roman", Font.BOLD, 16);
 	
-	private final static int SIZE = 100;
-	//user input
+	private final static int DEFAULT_SIZE = 100;
+
 	private boolean terminateOn;
 	private boolean crossover;
 	private int generations;
@@ -27,6 +35,10 @@ public class EvolutionViewer {
 	private JButton simulationButton;
 	private EvolutionComponent ec;
 	private JLabel genCntLabel;
+	
+	/**
+	 * ensures: intitializes the population, EvolutionComponent, and other settings (terminate, crossover, elitism, generation)
+	 */
 	public EvolutionViewer()
 	{
 		
@@ -37,7 +49,11 @@ public class EvolutionViewer {
 		crossover = false;
 		elitismNum = 0;
 		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
-	}
+	} // EvolutionViewer
+	
+	/**
+	 * ensures: initializes and runs the frame and timer for the evolution component, as well as run the population and best individual viewer
+	 */
 	public void runEvolutionViewer() {
 		// run chromosome viewer
 		ChromosomeViewer cv = new ChromosomeViewer();
@@ -55,7 +71,6 @@ public class EvolutionViewer {
 		graphTitle.setFont(DEFAULT_FONT);
 		frame.add(graphTitle, BorderLayout.NORTH);
 		frame.add(genCntLabel, BorderLayout.EAST);
-		
 		
 		// graph (evolution component)
 		frame.add(ec, BorderLayout.CENTER);
@@ -92,10 +107,8 @@ public class EvolutionViewer {
   					System.out.println("diversity: " + population.getAverageHammingDistance());
   					System.out.println(population);
   				}
-  			}
+  			} // actionPerformed
   		});
-        
-        
         
 		// last panel with all other components
 		JPanel bottomPanel = new JPanel();
@@ -105,7 +118,6 @@ public class EvolutionViewer {
 //		bottomPanel.add(bottomButtonPanel,BorderLayout.SOUTH);
 		frame.add(bottomPanel, BorderLayout.SOUTH);
 		
-
 		// mutations
 		JLabel mutationRateLabel = new JLabel("Mutation Rate (N/pop)", SwingConstants.CENTER);
 		mutationRateLabel.setFont(DEFAULT_FONT);
@@ -206,13 +218,30 @@ public class EvolutionViewer {
 		
 		
 		
-
+		/**
+		 * Class: SimulationButtonListener
+		 * @author kangd2 & leecs1
+		 * <br>Purpose: Used to clicks on the simulation button and run the timer accordingly
+		 * <br>For example: 
+		 * <pre>
+		 *    SimulationButtonListener listender = new SimulationButtonListener();
+		 * </pre>
+		 */
 		class SimulationButtonListener implements ActionListener{
+			
 			private String state;
+			
+			/**
+			 * ensures: initializes the state to "start"
+			 */
 			public SimulationButtonListener()
 			{
 				state = "start";
-			}
+			} // SimulationButtonListener
+			
+			/**
+			 * ensures: listens to clicks made on the button and adjusts variables according to user input
+			 */
 		    public void actionPerformed(ActionEvent e){
 		    	System.out.println("clicked");
 		    	if(state.equals("start"))
@@ -228,7 +257,7 @@ public class EvolutionViewer {
 					Action fitnessTypeAction = fitnessTypesList.getAction();
 					try
 					{
-						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * SIZE);
+						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * DEFAULT_SIZE);
 						generations = Integer.parseInt(generationsStr);
 						elitismNum = Integer.parseInt(elitismStr);
 						terminateOn = terminateBool;
@@ -268,16 +297,15 @@ public class EvolutionViewer {
 		    		timer.start();
 		    		simulationButton.setText("Pause");
 		    	}
-				
-		    }
-		}
+		    } // actionPerformed
+		} // SimulationButtonListener
 		simulationButton.addActionListener(new SimulationButtonListener());
 		
 		// set frame visible and closing operation
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-	}
-}
+	} // runEvolutionViewer
+} // EvolutionViewer
 
 //class SimulationSelectionDropDownListener implements ActionListener{
 //    public void actionPerformed(ActionEvent e){

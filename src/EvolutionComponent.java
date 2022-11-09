@@ -14,6 +14,7 @@ import javax.swing.*;
  * </pre>
  */
 public class EvolutionComponent extends JComponent{
+	
 	private final static int ORIGIN_X = 200;
 	private final static int ORIGIN_Y = 500;
 
