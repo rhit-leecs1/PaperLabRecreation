@@ -32,7 +32,7 @@ public class EvolutionComponent extends JComponent{
 	private final static Color BEST_COLOR = Color.BLUE;
 	private final static Color AVG_COLOR = Color.GREEN;
 	private final static Color WORST_COLOR = Color.RED;
-	private final static Color DIVERSITY_COLOR = Color.YELLOW;
+	private final static Color DIVERSITY_COLOR = Color.ORANGE;
 	
 	private final static BasicStroke LINE_STROKE = new BasicStroke(2);
 	private final static BasicStroke AXES_STROKE = new BasicStroke(1);

@@ -19,7 +19,7 @@ public class EvolutionViewer {
 	private final static int DEFAULT_FRAME_X = 1700;
 	private final static int DEFAULT_FRAME_Y = 700;
 
-	private final static int TERMINATE_AT_FITNESS = 90;
+	private final static int TERMINATE_AT_FITNESS = 100;
 	private final static int DEFAULT_GENERATIONS = 100;
 	private final static Font DEFAULT_FONT = new Font("Times New Roman", Font.BOLD, 16);
 	
@@ -161,7 +161,7 @@ public class EvolutionViewer {
 		generationsLabel.setFont(DEFAULT_FONT);
 		JTextField generationsTextField = new JTextField("100", 5);
 
-		JLabel terminateLabel = new JLabel("Terminal Fitness 90?", SwingConstants.CENTER);
+		JLabel terminateLabel = new JLabel("Terminal Fitness 100?", SwingConstants.CENTER);
 		terminateLabel.setFont(DEFAULT_FONT);
 		JCheckBox terminateCheckBox = new JCheckBox();
 		terminateCheckBox.setBounds(20,20,20,20);
