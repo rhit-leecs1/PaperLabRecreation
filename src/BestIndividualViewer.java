@@ -15,6 +15,7 @@ public class BestIndividualViewer {
 	private static final int FRAME_HEIGHT = 300;
 	private Individual best;
 	private BestIndividualComponent bic;
+	private JFrame frame;
 	
 	/**
      * ensures: initializes the best individual to best
@@ -32,7 +33,7 @@ public class BestIndividualViewer {
     public void runBestIndividualViewer()
     {
     	// initializes frame
-    	JFrame frame = new JFrame();
+    	frame = new JFrame();
     	Dimension d = new Dimension(FRAME_WIDTH,FRAME_HEIGHT);
     	frame.setSize(d);
     	frame.setTitle("Best Individual Viewer");
@@ -57,4 +58,10 @@ public class BestIndividualViewer {
     	bic.updateBest(best);
     	bic.repaint();
     } // updateBest
+    
+    public void remove()
+    {
+    	frame.setVisible(false);
+    	frame.dispose();
+    }
 } // BestIndividualViewer

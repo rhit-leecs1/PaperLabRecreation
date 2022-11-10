@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.*;
 /**
@@ -49,6 +50,7 @@ public class EvolutionComponent extends JComponent{
 	private ArrayList<Line2D> avgLines;
 	private ArrayList<Line2D> worstLines;
 	private ArrayList<Line2D> diversityLines;
+	private HashSet<Line2D> startLines;
 	
 	/**
 	 * ensures: stores given population and initializes the graph
@@ -56,6 +58,7 @@ public class EvolutionComponent extends JComponent{
 	 * <br>requires: population &ne; null
 	 */
 	public EvolutionComponent(Population population) {
+		startLines = new HashSet<>();
 		this.population = population;
 		this.generations = DEFAULT_GENERATIONS;
 		this.curGenerationsLeft = DEFAULT_GENERATIONS;
@@ -78,6 +81,7 @@ public class EvolutionComponent extends JComponent{
 	public EvolutionComponent(Population population, int generations) {
 		this(population);
 		this.generations = generations;
+		this.curGenerationsLeft = generations;
 		this.deltaX = X_AXIS_WIDTH / generations;
 	} // EvolutionComponent
 	
@@ -94,6 +98,10 @@ public class EvolutionComponent extends JComponent{
 		avgLines.add(avgLine);
 		worstLines.add(worstLine);
 		diversityLines.add(diversityLine);
+		startLines.add(bestLine);
+		startLines.add(avgLine);
+		startLines.add(worstLine);
+		startLines.add(diversityLine);
 	} // initializeGraph
 	
 	/**
@@ -115,7 +123,8 @@ public class EvolutionComponent extends JComponent{
 	public void drawAll(Graphics2D g2) {
 		drawAxes(g2);
 		drawKey(g2);
-		drawLines(g2);
+		if(generations>curGenerationsLeft)
+			drawLines(g2);		
 	} // drawAll
 	
 	/**
@@ -170,8 +179,15 @@ public class EvolutionComponent extends JComponent{
 //			System.out.println("diversity: "+this.population.getAverageHammingDistance());
 			y2 = ORIGIN_Y - (this.population.getAverageHammingDistance() * DELTA_Y);
 		}
-		
 		Line2D newLine = new Line2D.Double(x1, y1, x2, y2);
+		if(generations>curGenerationsLeft)
+		{
+			newLine = new Line2D.Double(ORIGIN_X + ((generations-curGenerationsLeft-1) * deltaX), y1, ORIGIN_X + ((generations-curGenerationsLeft) * deltaX), y2);
+		}
+		else
+		{
+			startLines.add(newLine);
+		}
 		lines.add(newLine);
 	} // updateLines
 	
@@ -206,23 +222,28 @@ public class EvolutionComponent extends JComponent{
 	public void drawLines(Graphics2D g2) {
 		g2.setStroke(LINE_STROKE);
 		g2.setColor(BEST_COLOR);
+		
 		for (Line2D line : this.bestLines) {
-			g2.draw(line);
+			if(!startLines.contains(line))
+				g2.draw(line);
 		}
 		
 		g2.setColor(AVG_COLOR);
 		for (Line2D line : this.avgLines) {
-			g2.draw(line);
+			if(!startLines.contains(line))
+				g2.draw(line);
 		}
 
 		g2.setColor(WORST_COLOR);
 		for (Line2D line : this.worstLines) {
-			g2.draw(line);
+			if(!startLines.contains(line))
+				g2.draw(line);
 		}
 		
 		g2.setColor(DIVERSITY_COLOR);
 		for (Line2D line : this.diversityLines) {
-			g2.draw(line);
+			if(!startLines.contains(line))
+				g2.draw(line);
 		}
 	} // drawLines
 
@@ -255,14 +276,6 @@ public class EvolutionComponent extends JComponent{
 	{
 		this.population = population;
 	} // updatePop
-	
-	/**
-	 * ensures: returns the population
-	 * @return population
-	 */
-	public Population getPopulation() {
-		return this.population;
-	} // getPopulation
 	
 	/**
 	 * ensures: updates the number of generations left in the evolution and signals new lines need to be drawn for the new generation

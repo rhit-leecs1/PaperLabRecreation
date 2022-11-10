@@ -4,6 +4,7 @@ public class PopulationViewer {
 	private Population p;
 	private int tick;
 	private PopulationComponent pc;
+	private JFrame frame;
 	public PopulationViewer(Population p)
 	{
 		this.tick = 0;
@@ -12,7 +13,7 @@ public class PopulationViewer {
     public void runPopulationViewer()
     {
     	//initializing frame
-    	JFrame frame = new JFrame();
+    	frame = new JFrame();
     	Dimension d = new Dimension(400,400);
     	frame.setSize(d);
     	frame.setTitle("Population Viewer");
@@ -31,6 +32,11 @@ public class PopulationViewer {
     	this.p = p;
     	pc.updatePop(p);
     	pc.repaint();
+    }
+    public void remove()
+    {
+    	frame.setVisible(false);
+    	frame.dispose();
     }
     
 }

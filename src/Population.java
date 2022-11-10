@@ -184,7 +184,6 @@ public class Population {
     {
     	sort();
     	double totalFitness = 0.0;
-    	double[] proportions = new double[SIZE];
     	for(Individual v : chromosomes)
     	{
     		totalFitness+=v.getFitness();
@@ -192,11 +191,10 @@ public class Population {
     	ArrayList<Individual> added = new ArrayList<>();
     	outer: while(added.size() < SIZE)
     	{
-    		for(int i = 0; i < proportions.length; i++)
+    		for(int i = 0; i < SIZE; i++)
     		{
     			if(added.size() == SIZE) break outer;
-    			proportions[i] = chromosomes[i].getFitness()/totalFitness;
-    			if(Math.random() <= proportions[i])
+    			if(Math.random() <= chromosomes[i].getFitness()/totalFitness)
     				added.add(new Individual(100,chromosomes[i].getBinString(), fitnessType, targetChromosome));
     		}
     	}
@@ -261,7 +259,7 @@ public class Population {
 	    		cnt++;
 	    	}
 	    	s+="\n";
-    	System.out.println("(cnt: " + cnt + ")");
+    	System.out.println("Population:");
     	
     	return s;
     }

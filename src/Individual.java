@@ -185,9 +185,16 @@ public class Individual implements Comparable {
         	}
         	return cnt;
     	}
-    	else if(fitnessType.equals("1010pattern"))
+    	else if(fitnessType.equals("checkered"))
     	{
-    		
+    		String pattern = "0101010101101010101001010101011010101010010101010110101010100101010101101010101001010101011010101010";
+    		int cnt = 0;
+        	for(int i = 0; i < genes.length; i++)
+        	{
+        		if(getBinString().charAt(i) == pattern.charAt(i))
+        			cnt++;
+        	}
+        	return cnt;
     	}
     	int sum = 0;
 		for(GeneButton g : genes)

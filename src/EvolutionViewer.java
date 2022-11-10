@@ -27,14 +27,20 @@ public class EvolutionViewer {
 
 	private boolean terminateOn;
 	private boolean crossover;
+	private PopulationViewer pv;
 	private int generations;
+	private int maxGenerations;
 	private int elitismNum;
-	
+	private String targetChromosome;
+	private String selectionType;
+	private String fitnessType;
 	private Population population;
 	private Timer timer;
 	private JButton simulationButton;
 	private EvolutionComponent ec;
 	private JLabel genCntLabel;
+	private String state;
+	private BestIndividualViewer biv;
 	
 	/**
 	 * ensures: intitializes the population, EvolutionComponent, and other settings (terminate, crossover, elitism, generation)
@@ -43,6 +49,7 @@ public class EvolutionViewer {
 	{
 		
 		population = new Population();
+		selectionType = "Truncation";
 		ec = new EvolutionComponent(population);
 		generations = DEFAULT_GENERATIONS;
 		terminateOn = false;
@@ -76,11 +83,11 @@ public class EvolutionViewer {
 		frame.add(ec, BorderLayout.CENTER);
 		
 		// population viewer
-		PopulationViewer pv = new PopulationViewer(population);
+		pv = new PopulationViewer(population);
         pv.runPopulationViewer();
 		
         // best individual viewer
-        BestIndividualViewer biv = new BestIndividualViewer(population.getBestIndividual());
+        biv = new BestIndividualViewer(population.getBestIndividual());
         biv.runBestIndividualViewer();
 		
         // timer
@@ -90,20 +97,31 @@ public class EvolutionViewer {
   				if((generations == 0) || (terminateOn && population.getBestFitness() == TERMINATE_AT_FITNESS))
   				{
   					timer.stop();
-  					simulationButton.setEnabled(false);
+  					state = "restart";
+  					simulationButton.setText("Start Evolution");
   				}
   				else
   				{
   					generations--;
-  					population.truncate();
+  					population.setFitnessType(fitnessType);
+  					population.setTargetChromosome(targetChromosome);
+  					if(selectionType.equals("Truncation"))
+  						population.truncate();
+  					else if(selectionType.equals("Roulette Wheel"))
+  						population.rouletteWheelSelection();
+  					else if(selectionType.equals("Rank"))
+  						population.rankSelection();
+  					else
+  						System.out.println("invalid selection type");
+  					population.setFitnessType(fitnessType);
+  					population.setTargetChromosome(targetChromosome);
       				ec.updatePop(population);
       				ec.updateGenerations(generations);
   					ec.repaint();
-  					System.out.println("ec repaint");
   					pv.updatePop(population);
   					biv.updateBest(population.getBestIndividual());
-  					genCntLabel.setText("Generation " + (100-generations) + "     ");
-  					System.out.println("Generation " + (100-generations));
+  					genCntLabel.setText("Generation " + (maxGenerations-generations) + "     ");
+  					System.out.println("Generation " + (maxGenerations-generations));
   					System.out.println("diversity: " + population.getAverageHammingDistance());
   					System.out.println(population);
   				}
@@ -125,7 +143,7 @@ public class EvolutionViewer {
 
 		JLabel selectionLabel = new JLabel("Selection", SwingConstants.CENTER);
 		selectionLabel.setFont(DEFAULT_FONT);
-		String[] selections = {"Truncation"};
+		String[] selections = {"Truncation", "Roulette Wheel", "Rank"};
 		JComboBox selectionList = new JComboBox(selections);
 		selectionList.setSelectedIndex(0);
 //		selectionList.addActionListener(selectionList);
@@ -177,9 +195,9 @@ public class EvolutionViewer {
 //		bottomButtonPanel.add(elitismTextField);
 //		bottomButtonPanel.add(simulationButton);
 
-		JLabel fitnessTypeLabel = new JLabel("Selection", SwingConstants.CENTER);
+		JLabel fitnessTypeLabel = new JLabel("Fitness Type:", SwingConstants.CENTER);
 		fitnessTypeLabel.setFont(DEFAULT_FONT);
-		String[] fitnessTypes = {"basic","target","1010pattern"};
+		String[] fitnessTypes = {"basic","target","checkered"};
 		JComboBox fitnessTypesList = new JComboBox(fitnessTypes);
 		fitnessTypesList.setSelectedIndex(0);
 		
@@ -229,8 +247,6 @@ public class EvolutionViewer {
 		 */
 		class SimulationButtonListener implements ActionListener{
 			
-			private String state;
-			
 			/**
 			 * ensures: initializes the state to "start"
 			 */
@@ -243,34 +259,95 @@ public class EvolutionViewer {
 			 * ensures: listens to clicks made on the button and adjusts variables according to user input
 			 */
 		    public void actionPerformed(ActionEvent e){
-		    	System.out.println("clicked");
+		    	
 		    	if(state.equals("start"))
 		    	{
 		    		String mRateNumeratorStr = mutationRateTextField.getText();
-					Action selectionAction = selectionList.getAction();
+		    		boolean crossoverBool = crossoverCheckBox.isSelected();
+		    		boolean terminateBool = terminateCheckBox.isSelected();
+		    		String populationSizeStr = populationSizeTextField.getText();
+		    		String generationsStr = generationsTextField.getText();
+		    		String genomeLengthStr = genomeLengthTextField.getText();
+		    		String elitismStr = elitismTextField.getText();
+		    		String fitnessTypeString = fitnessTypesList.getSelectedItem().toString();
+		    		String selectionString = selectionList.getSelectedItem().toString();
+		    		try
+		    		{
+		    			double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * DEFAULT_SIZE);
+		    			generations = Integer.parseInt(generationsStr);
+		    			maxGenerations = Integer.parseInt(generationsStr);
+		    			frame.remove(ec);
+		    			ec = new EvolutionComponent(population,generations);
+		    			frame.add(ec);
+		    			elitismNum = Integer.parseInt(elitismStr);
+		    			terminateOn = terminateBool;
+		    			crossover = crossoverBool;
+		    			fitnessType = fitnessTypeString;
+		    			selectionType = selectionString;
+		    			population.setFitnessType(fitnessType);
+		    			targetChromosome = cv.getTargetChromosome();
+		    			population.setTargetChromosome(targetChromosome);
+		    			population.setMutationRate(mRate);
+		    			population.setElitismNum(elitismNum);
+		    			population.setCrossoverBool(crossoverBool);
+		    			state = "started";
+		    			simulationButton.setText("Pause");
+		    			timer.start();
+//						System.out.println("mRateNumberatorStr: "+mRateNumeratorStr);
+//						System.out.println("mRate: "+mRate);
+//						System.out.println("selection: "+selectionAction);
+//						System.out.println("crossoverBool : "+crossoverBool);
+//						System.out.println("populationSizeStr: "+populationSizeStr);
+//						System.out.println("generationsStr: "+generationsStr);
+//						System.out.println("genomeLengthStr: "+genomeLengthStr);
+//						System.out.println("elitismStr: "+elitismStr);
+		    		}
+		    		catch (Exception error)
+		    		{
+		    			System.err.println("Invalid input");
+		    		}
+		    	}
+		    	else if(state.equals("restart"))
+		    	{
+		    		String mRateNumeratorStr = mutationRateTextField.getText();
 					boolean crossoverBool = crossoverCheckBox.isSelected();
 					boolean terminateBool = terminateCheckBox.isSelected();
 					String populationSizeStr = populationSizeTextField.getText();
 					String generationsStr = generationsTextField.getText();
 					String genomeLengthStr = genomeLengthTextField.getText();
 					String elitismStr = elitismTextField.getText();
-					Action fitnessTypeAction = fitnessTypesList.getAction();
+					String fitnessTypeString = fitnessTypesList.getSelectedItem().toString();
+					String selectionString = selectionList.getSelectedItem().toString();
 					try
 					{
 						double mRate = Integer.parseInt(mRateNumeratorStr) / (1.0 * DEFAULT_SIZE);
 						generations = Integer.parseInt(generationsStr);
+						maxGenerations = Integer.parseInt(generationsStr);
+						population= new Population();
+						frame.remove(ec);
+		    			ec = new EvolutionComponent(population,generations);
+		    			frame.add(ec);
+		    			biv.remove();
+		    			biv = new BestIndividualViewer(population.getBestIndividual());
+		    			biv.runBestIndividualViewer();
+		    			pv.remove();
+		    			pv = new PopulationViewer(population);
+		    			pv.runPopulationViewer();
 						elitismNum = Integer.parseInt(elitismStr);
 						terminateOn = terminateBool;
+						ec.resetLines();
 						crossover = crossoverBool;
-						
-						population.setFitnessType(""+fitnessTypeAction);
-						population.setTargetChromosome(cv.getTargetChromosome());
+						fitnessType = fitnessTypeString;
+						selectionType = selectionString;
+						population.setFitnessType(fitnessType);
+						targetChromosome = cv.getTargetChromosome();
+						population.setTargetChromosome(targetChromosome);
 						population.setMutationRate(mRate);
 						population.setElitismNum(elitismNum);
 						population.setCrossoverBool(crossoverBool);
 						state = "started";
 						simulationButton.setText("Pause");
-						timer.start();
+						timer.restart();
 //						System.out.println("mRateNumberatorStr: "+mRateNumeratorStr);
 //						System.out.println("mRate: "+mRate);
 //						System.out.println("selection: "+selectionAction);
@@ -298,6 +375,7 @@ public class EvolutionViewer {
 		    		simulationButton.setText("Pause");
 		    	}
 		    } // actionPerformed
+		    
 		} // SimulationButtonListener
 		simulationButton.addActionListener(new SimulationButtonListener());
 		
