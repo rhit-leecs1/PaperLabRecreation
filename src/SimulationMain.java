@@ -18,8 +18,7 @@ public class SimulationMain {
 	 * ensures: initializes and runs the chromosome and evolution viewers
 	 */
     public static void main(String[] args) {
-        ChromosomeViewer cv = new ChromosomeViewer();
-        cv.runChromosomeViewer();
+        
         EvolutionViewer ev = new EvolutionViewer();
         ev.runEvolutionViewer();
     } // main

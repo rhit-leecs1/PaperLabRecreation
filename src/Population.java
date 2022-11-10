@@ -140,6 +140,7 @@ public class Population {
     }
     public void setFitnessType(String str)
     {
+    	this.fitnessType=str;
     	for(Individual v : chromosomes)
     	{
     		v.setFitnessType(str);
@@ -147,6 +148,7 @@ public class Population {
     }
     public void setTargetChromosome(String str)
     {
+    	this.targetChromosome = str;
     	for(Individual v : chromosomes)
     	{
     		v.setTargetChromosome(str);
@@ -167,7 +169,7 @@ public class Population {
     			if(added.size() == SIZE) break outer;
     			double proportion = (100-i)/weightTotal;
     			if(Math.random() <= proportion)
-    				added.add(new Individual(100,chromosomes[i].getBinString()));
+    				added.add(new Individual(100,chromosomes[i].getBinString(),fitnessType, targetChromosome));
     		}
     	}
     	int i = 0;
@@ -195,7 +197,7 @@ public class Population {
     			if(added.size() == SIZE) break outer;
     			proportions[i] = chromosomes[i].getFitness()/totalFitness;
     			if(Math.random() <= proportions[i])
-    				added.add(new Individual(100,chromosomes[i].getBinString()));
+    				added.add(new Individual(100,chromosomes[i].getBinString(), fitnessType, targetChromosome));
     		}
     	}
     	int i = 0;
@@ -211,8 +213,8 @@ public class Population {
     	this.sort();
     	for (int i = elitismNum; i < SIZE/2; i++) {
     		Individual cur = this.chromosomes[i];
-    	    this.chromosomes[i] = new Individual(100,cur.getBinString());
-    	    this.chromosomes[i+SIZE/2] = new Individual(100,cur.getBinString());
+    	    this.chromosomes[i] = new Individual(100,cur.getBinString(), fitnessType, targetChromosome);
+    	    this.chromosomes[i+SIZE/2] = new Individual(100,cur.getBinString(), fitnessType, targetChromosome);
     	    if(crossoverBool)
     	    {
     	    	doCrossover();
@@ -225,8 +227,8 @@ public class Population {
     
     public Individual[] doOneCrossover(Individual one, Individual two)
     {
-    	Individual newOne = new Individual(100, "" + one.getBinString().substring(0,50) + two.getBinString().substring(50));
-    	Individual newTwo = new Individual(100, "" + two.getBinString().substring(0,50) + one.getBinString().substring(50));
+    	Individual newOne = new Individual(100, "" + one.getBinString().substring(0,50) + two.getBinString().substring(50), fitnessType, targetChromosome);
+    	Individual newTwo = new Individual(100, "" + two.getBinString().substring(0,50) + one.getBinString().substring(50), fitnessType, targetChromosome);
     	Individual[] offspring = {one, two};
     	return offspring;
     }

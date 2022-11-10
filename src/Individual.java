@@ -57,6 +57,21 @@ public class Individual implements Comparable {
 		}
     	
     }
+    public Individual(int size, String geneStr, String fitnessType, String targetChromosome)
+    {
+    	this.targetChromosome = targetChromosome;
+    	this.fitnessType = fitnessType;
+    	if(size == 20)
+    		genes = new GeneButton[20];
+    	else if(size == 100)
+    		genes = new GeneButton[100];
+		for(int c = 0; c < genes.length; c++)
+		{
+//    		System.out.println(r + ","+c + ":"+geneStr.charAt(r*(genes.length-1) + c));
+			genes[c] = new GeneButton(c, geneStr.charAt(c)=='0'?false:true);
+		}
+    	
+    }
 	public void drawOn(JPanel genePanel)
     {
 		for(int c = 0; c < genes.length; c++)
@@ -106,7 +121,7 @@ public class Individual implements Comparable {
     public Individual mutateIndividual(double mRate)
     {
     	String geneStr = this.getBinString();
-    	Individual newIndividual = new Individual(100, geneStr);
+    	Individual newIndividual = new Individual(100, geneStr, fitnessType, targetChromosome);
     	newIndividual.mutate(mRate);
     	return newIndividual;
     }
@@ -137,6 +152,10 @@ public class Individual implements Comparable {
     {
     	fitnessType = str;
     }
+    public String getFitnessType()
+    {
+    	return fitnessType;
+    }
     public void setTargetChromosome(String str)
     {
     	targetChromosome = str;
@@ -161,7 +180,7 @@ public class Individual implements Comparable {
     		int cnt = 0;
         	for(int i = 0; i < genes.length; i++)
         	{
-        		if(getBinString().charAt(i) != targetChromosome.charAt(i))
+        		if(getBinString().charAt(i) == targetChromosome.charAt(i))
         			cnt++;
         	}
         	return cnt;
