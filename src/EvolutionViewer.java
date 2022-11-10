@@ -24,7 +24,9 @@ public class EvolutionViewer {
 	private final static Font DEFAULT_FONT = new Font("Times New Roman", Font.BOLD, 16);
 	
 	private final static int DEFAULT_SIZE = 100;
-
+	private String max;
+	private String min;
+	
 	private boolean terminateOn;
 	private boolean crossover;
 	private PopulationViewer pv;
@@ -47,7 +49,8 @@ public class EvolutionViewer {
 	 */
 	public EvolutionViewer()
 	{
-		
+		max = "Generation0 " + -1;
+		min = "Generation0 " + Integer.MAX_VALUE;
 		population = new Population();
 		selectionType = "Truncation";
 		ec = new EvolutionComponent(population);
@@ -97,6 +100,7 @@ public class EvolutionViewer {
   				if((generations == 0) || (terminateOn && population.getBestFitness() == TERMINATE_AT_FITNESS))
   				{
   					timer.stop();
+  					System.out.println("max: " + max + "," + min);
   					state = "restart";
   					simulationButton.setText("Start Evolution");
   				}
@@ -122,6 +126,12 @@ public class EvolutionViewer {
   					biv.updateBest(population.getBestIndividual());
   					genCntLabel.setText("Generation " + (maxGenerations-generations) + "     ");
   					System.out.println("Generation " + (maxGenerations-generations));
+  					int best = population.getBestFitness();
+  					if(Integer.parseInt(max.split(" ")[1]) < best)
+  						max = "Generation" + (maxGenerations-generations) + " " + Math.max(Integer.parseInt(max.split(" ")[1]),best);
+  					int worst = population.getLeastFitness();
+  					if(Integer.parseInt(min.split(" ")[1]) > worst)
+  						min = "Generation" + (maxGenerations-generations) + " " + Math.min(Integer.parseInt(min.split(" ")[1]),worst);
   					System.out.println("diversity: " + population.getAverageHammingDistance());
   					System.out.println(population);
   				}
@@ -293,6 +303,8 @@ public class EvolutionViewer {
 		    			state = "started";
 		    			simulationButton.setText("Pause");
 		    			timer.start();
+		    			
+		    			
 //						System.out.println("mRateNumberatorStr: "+mRateNumeratorStr);
 //						System.out.println("mRate: "+mRate);
 //						System.out.println("selection: "+selectionAction);

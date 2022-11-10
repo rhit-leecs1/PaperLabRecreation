@@ -162,21 +162,21 @@ public class Population {
     		weightTotal+=(100-i);
     	}
     	ArrayList<Individual> added = new ArrayList<>();
-    	outer: while(added.size() < SIZE)
+    	outer: while(added.size() < SIZE-elitismNum)
     	{
     		for(int i = 0; i < SIZE; i++)
     		{
-    			if(added.size() == SIZE) break outer;
+    			if(added.size() == SIZE-elitismNum) break outer;
     			double proportion = (100-i)/weightTotal;
     			if(Math.random() <= proportion)
     				added.add(new Individual(100,chromosomes[i].getBinString(),fitnessType, targetChromosome));
     		}
     	}
-    	int i = 0;
+    	int i = elitismNum;
     	for(Individual v : added)
     	{
-    		chromosomes[i] = v;
-    		chromosomes[i].mutate(mRate);
+			chromosomes[i] = v;
+			chromosomes[i].mutate(mRate);    			
     		i++;
     	}
     }
@@ -189,20 +189,20 @@ public class Population {
     		totalFitness+=v.getFitness();
     	}
     	ArrayList<Individual> added = new ArrayList<>();
-    	outer: while(added.size() < SIZE)
+    	outer: while(added.size() < SIZE-elitismNum)
     	{
     		for(int i = 0; i < SIZE; i++)
     		{
-    			if(added.size() == SIZE) break outer;
+    			if(added.size() == SIZE-elitismNum) break outer;
     			if(Math.random() <= chromosomes[i].getFitness()/totalFitness)
     				added.add(new Individual(100,chromosomes[i].getBinString(), fitnessType, targetChromosome));
     		}
     	}
-    	int i = 0;
+    	int i = elitismNum;
     	for(Individual v : added)
     	{
     		chromosomes[i] = v;
-    		chromosomes[i].mutate(mRate);
+			chromosomes[i].mutate(mRate);   
     		i++;
     	}
     }
