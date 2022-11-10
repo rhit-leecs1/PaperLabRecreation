@@ -6,7 +6,7 @@ import java.util.Random;
 import javax.swing.*;
 public class Population {
     private Individual[] chromosomes;
-    private final int SIZE = 100;
+    private final int SIZE = 1000;
     private double mRate;
     private boolean crossoverBool;
     private int elitismNum;
@@ -18,62 +18,20 @@ public class Population {
     	targetChromosome = "";
     	this.chromosomes = new Individual[SIZE];
     	for (int i = 0; i < SIZE; i++) {
-    		this.chromosomes[i] = new Individual();
+    		this.chromosomes[i] = new Individual(20);
     	}
-    	mRate = .01;
-    	crossoverBool=false;
-    	elitismNum = 0;
-	}
-    public Population(long seed)
-    {
-    	fitnessType = "basic";
-    	targetChromosome = "";
-    	this.chromosomes = new Individual[SIZE];
-    	
-		Random r = new Random(seed);
-
-    	for (int i = 0; i < SIZE; i++) {
-    		this.chromosomes[i] = new Individual(r);
-    	}
-    	crossoverBool=false;
-    	mRate = .01;
-    	elitismNum = 0;
-	}
-    public Population(double mRate)
-    {
-    	fitnessType = "basic";
-    	targetChromosome = "";
-    	this.chromosomes = new Individual[SIZE];
-    	for (int i = 0; i < SIZE; i++) {
-    		this.chromosomes[i] = new Individual();
-    	}
-    	this.mRate = mRate;
-    	crossoverBool=false;
+    	mRate = 0;
+    	crossoverBool=true;
     	elitismNum = 0;
 	}
 
-    public Population(long seed, double mRate) 
-    {
-    	fitnessType = "basic";
-    	targetChromosome = "";
-    	this.chromosomes = new Individual[SIZE];
-    	
-		Random r = new Random(seed);
-
-    	for (int i = 0; i < SIZE; i++) {
-    		this.chromosomes[i] = new Individual(r);
-    	}
-    	this.mRate = mRate;
-    	crossoverBool=false;
-    	elitismNum = 0;
-	}
     public void drawOn(Graphics2D g)
     {
-    	for(int i = 0; i < 10; i++)
+    	for(int i = 0; i < 50; i++)
     	{
-    		for(int c = 0; c < 10; c++)
+    		for(int c = 0; c < 20; c++)
     		{
-    			chromosomes[i*10+c].drawIndividual(g, 5 + c*31, 5 + i*31);
+    			chromosomes[i*20+c].drawIndividual(g, 5 + c*31, 5 + i*31);
     		}
     	}
     }
@@ -95,7 +53,7 @@ public class Population {
 	 * Terminate after a predetermined number of generations
      */
 	
-    public int getBestFitness()
+    public double getBestFitness()
     {
     	sort();
     	return chromosomes[0].getFitness();
@@ -105,12 +63,12 @@ public class Population {
     	sort();
     	return chromosomes[0];
     }
-    public int getAverageFitness()
+    public double getAverageFitness()
     {
     	sort();
     	return chromosomes[chromosomes.length/2].getFitness();
     }
-    public int getLeastFitness()
+    public double getLeastFitness()
     {
     	sort();
     	return chromosomes[chromosomes.length-1].getFitness();
@@ -138,114 +96,18 @@ public class Population {
     	int numPairs = chromosomes.length*(chromosomes.length-1)/2;
     	return sum/numPairs;
     }
-    public void setFitnessType(String str)
+    
+    
+    public Individual doOneCrossover(Individual one, Individual two)
     {
-    	this.fitnessType=str;
-    	for(Individual v : chromosomes)
-    	{
-    		v.setFitnessType(str);
-    	}
-    }
-    public void setTargetChromosome(String str)
-    {
-    	this.targetChromosome = str;
-    	for(Individual v : chromosomes)
-    	{
-    		v.setTargetChromosome(str);
-    	}
-    }
-    public void rankSelection()
-    {
-    	double weightTotal = 0.0;
-    	for(int i = 0; i < SIZE; i++)
-    	{
-    		weightTotal+=(100-i);
-    	}
-    	ArrayList<Individual> added = new ArrayList<>();
-    	outer: while(added.size() < SIZE-elitismNum)
-    	{
-    		for(int i = 0; i < SIZE; i++)
-    		{
-    			if(added.size() == SIZE-elitismNum) break outer;
-    			double proportion = (100-i)/weightTotal;
-    			if(Math.random() <= proportion)
-    				added.add(new Individual(100,chromosomes[i].getBinString(),fitnessType, targetChromosome));
-    		}
-    	}
-    	int i = elitismNum;
-    	for(Individual v : added)
-    	{
-			chromosomes[i] = v;
-			chromosomes[i].mutate(mRate);    			
-    		i++;
-    	}
-    }
-    public void rouletteWheelSelection()
-    {
-    	sort();
-    	double totalFitness = 0.0;
-    	for(Individual v : chromosomes)
-    	{
-    		totalFitness+=v.getFitness();
-    	}
-    	ArrayList<Individual> added = new ArrayList<>();
-    	outer: while(added.size() < SIZE-elitismNum)
-    	{
-    		for(int i = 0; i < SIZE; i++)
-    		{
-    			if(added.size() == SIZE-elitismNum) break outer;
-    			if(Math.random() <= chromosomes[i].getFitness()/totalFitness)
-    				added.add(new Individual(100,chromosomes[i].getBinString(), fitnessType, targetChromosome));
-    		}
-    	}
-    	int i = elitismNum;
-    	for(Individual v : added)
-    	{
-    		chromosomes[i] = v;
-			chromosomes[i].mutate(mRate);   
-    		i++;
-    	}
-    }
-    public void truncate()
-    {
-    	this.sort();
-    	for (int i = elitismNum; i < SIZE/2; i++) {
-    		Individual cur = this.chromosomes[i];
-    	    this.chromosomes[i] = new Individual(100,cur.getBinString(), fitnessType, targetChromosome);
-    	    this.chromosomes[i+SIZE/2] = new Individual(100,cur.getBinString(), fitnessType, targetChromosome);
-    	    if(crossoverBool)
-    	    {
-    	    	doCrossover();
-    	    }
-    	    chromosomes[i].mutate(mRate);
-    	    chromosomes[i+SIZE/2].mutate(mRate);
-    	}
-    	this.sort();
+    	int point =  (int)Math.round(Math.random()*19+1);
+    	Individual newOne = new Individual(20, "" + one.getBinString().substring(0,point) + two.getBinString().substring(point));
+    	return newOne;
     }
     
-    public Individual[] doOneCrossover(Individual one, Individual two)
-    {
-    	Individual newOne = new Individual(100, "" + one.getBinString().substring(0,50) + two.getBinString().substring(50), fitnessType, targetChromosome);
-    	Individual newTwo = new Individual(100, "" + two.getBinString().substring(0,50) + one.getBinString().substring(50), fitnessType, targetChromosome);
-    	Individual[] offspring = {one, two};
-    	return offspring;
-    }
-    public void doCrossover()
-    {
-    	for(int i = elitismNum; i < SIZE; i+=2)
-    	{
-    		Individual[] offspring = doOneCrossover(chromosomes[i], chromosomes[i+1]);
-			chromosomes[i] = offspring[0];
-			chromosomes[i+1] = offspring[1];
-    	}
-    }
-    public void setElitismNum(int elitismNum)
-    {
-    	this.elitismNum=elitismNum;
-    }
     public void sort()
     {
-    	Arrays.sort(this.chromosomes);
+    	Arrays.sort(chromosomes);
     }
     
     
@@ -263,12 +125,64 @@ public class Population {
     	
     	return s;
     }
-    public void setMutationRate(double mRate)
-    {
-    	this.mRate=mRate;
-    }
+    
     public void setCrossoverBool(boolean b)
     {
-    	crossoverBool=b;
+    	crossoverBool=true;
     }
+
+	public void nextGeneration() {
+		
+		sort();
+    	double totalFitness = 0.0;
+    	for(Individual v : chromosomes)
+    	{
+    		totalFitness+=v.getFitness();
+    	}
+    	ArrayList<Individual> added = new ArrayList<>();
+    	outer: while(added.size() < SIZE)
+    	{
+    		ArrayList<Individual> pair = new ArrayList<>();
+    		for(int i = 0; i < SIZE; i++)
+    		{
+    			if(added.size() == SIZE) break outer;
+    			if(pair.size() == 2)
+    			{
+    				added.add( doOneCrossover( pair.get(0),pair.get(1) ) );
+    				continue outer;
+    			}
+    			if(Math.random() <= chromosomes[i].getFitness()/totalFitness)
+    			{
+    				pair.add(chromosomes[i]);
+    			}
+    		}
+    	}
+    	int i = 0;
+    	for(Individual v : added)
+    	{
+    		chromosomes[i] = v;
+    		i++;
+    	}
+	}
+
+	public int getOnes() {
+		return countAll('1');
+	}
+
+	public int getZeroes() {
+		return countAll('0');
+	}
+
+	public int getQuestions() {
+		return countAll('?');
+	}
+	
+	private int countAll(char c) {
+		int sum = 0;
+		for (Individual i: chromosomes) {
+			sum += i.countAll(c);
+		}
+		return sum;
+	}
+	
 }

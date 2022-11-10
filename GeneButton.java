@@ -2,24 +2,38 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 public class GeneButton extends JButton{
-    private boolean bin;
+    private char bin;
     private Color color;
     private int num;
     public GeneButton(int num)
     {
     	super(""+ num);
-    	bin = (int)Math.round(Math.random()) == 0 ? false : true;
-    	if(!bin)
+    	double r = Math.random();
+    	if(r<=.5)
+    		bin='?';
+    	else if(r>.5 && r <= .75)
+    		bin='1';
+    	else
+    		bin='0';
+    	
+    	if(bin=='0')
     	{
     		color = Color.black;
     		this.setBackground(color);
     		this.setForeground(Color.white);
     	}
-    	if(bin)
+    	else if(bin=='1')
     	{
     		color = Color.green;
     		this.setBackground(color);
     		this.setForeground(Color.black);
+    	}
+    	else
+    	{
+    		color = Color.ORANGE;
+    		this.setBackground(color);
+    		this.setForeground(Color.black);
+    		
     	}
     	this.setBorderPainted(false);
     	this.setFocusPainted(false);
@@ -27,42 +41,28 @@ public class GeneButton extends JButton{
     	this.setPreferredSize(d);
     	this.setMaximumSize(d);
     }
-    public GeneButton(int num, Random r) {
-    	super(""+ num);
-    	bin = (int)Math.round(r.nextDouble()-.45) == 0 ? false : true;
-    	if(!bin)
-    	{
-    		color = Color.black;
-    		this.setBackground(color);
-    		this.setForeground(Color.white);
-    	}
-    	if(bin)
-    	{
-    		color = Color.green;
-    		this.setBackground(color);
-    		this.setForeground(Color.black);
-    	}
-    	this.setBorderPainted(false);
-    	this.setFocusPainted(false);
-    	Dimension d = new Dimension(5,5);
-    	this.setPreferredSize(d);
-    	this.setMaximumSize(d);
-	}
-    public GeneButton(int num, boolean bin)
+    public GeneButton(int num, char bin)
     {
     	super(""+ num);
     	this.bin = bin;
-    	if(!bin)
+    	if(bin=='0')
     	{
     		color = Color.black;
     		this.setBackground(color);
     		this.setForeground(Color.white);
     	}
-    	if(bin)
+    	else if(bin=='1')
     	{
     		color = Color.green;
     		this.setBackground(color);
     		this.setForeground(Color.black);
+    	}
+    	else
+    	{
+    		color = Color.ORANGE;
+    		this.setBackground(color);
+    		this.setForeground(Color.black);
+    		
     	}
     	this.setBorderPainted(false);
     	this.setFocusPainted(false);
@@ -74,9 +74,9 @@ public class GeneButton extends JButton{
     {
     	return "Gene #" + num + ", " + bin;
     }
-    public int getBin()
+    public char getBin()
     {
-    	return bin?1:0;
+    	return bin;
     }
     public Color getColor()
     {
@@ -88,18 +88,23 @@ public class GeneButton extends JButton{
     }
     public void flipBit()
     {
-    	bin = !bin;
-    	if(!bin)
+    	bin = Math.random()<=.5?'0':'1';
+    	if(bin=='0')
     	{
     		color = Color.black;
     		this.setBackground(color);
     		this.setForeground(Color.white);
     	}
-    	if(bin)
+    	else
     	{
     		color = Color.green;
     		this.setBackground(color);
     		this.setForeground(Color.black);
     	}
     }
+	public int countAll(char c) {
+		if (bin == c) 
+			return 1;
+		return 0;
+	}
 }

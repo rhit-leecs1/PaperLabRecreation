@@ -21,5 +21,10 @@ public class SimulationMain {
         
         EvolutionViewer ev = new EvolutionViewer();
         ev.runEvolutionViewer();
+//            	
+//    	Individual newI = new Individual(20,"111?11?1111?1111?111");
+//    	System.out.println(newI.getFitness());
+//    	
+    	
     } // main
 } // SimulationMain

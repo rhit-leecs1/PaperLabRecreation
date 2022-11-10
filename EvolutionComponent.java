@@ -29,10 +29,14 @@ public class EvolutionComponent extends JComponent{
 	private static final int KEY_TEXT_BUFFER = 20;
 	private static final int KEY_COLOR_BUFFER = 10;
 	
-	private final static Color BEST_COLOR = Color.BLUE;
-	private final static Color AVG_COLOR = Color.GREEN;
+	private final static Color BEST_COLOR = Color.MAGENTA;
+	private final static Color AVG_COLOR = Color.PINK;
 	private final static Color WORST_COLOR = Color.RED;
-	private final static Color DIVERSITY_COLOR = Color.ORANGE;
+	private final static Color DIVERSITY_COLOR = Color.YELLOW;
+
+	private final static Color ONE_COLOR = Color.GREEN;
+	private final static Color ZERO_COLOR = Color.BLACK;
+	private final static Color QUESTION_COLOR = Color.ORANGE;
 	
 	private final static BasicStroke LINE_STROKE = new BasicStroke(2);
 	private final static BasicStroke AXES_STROKE = new BasicStroke(1);
@@ -50,6 +54,9 @@ public class EvolutionComponent extends JComponent{
 	private ArrayList<Line2D> avgLines;
 	private ArrayList<Line2D> worstLines;
 	private ArrayList<Line2D> diversityLines;
+	private ArrayList<Line2D> oneLines;
+	private ArrayList<Line2D> zeroLines;
+	private ArrayList<Line2D> questionLines;
 	private HashSet<Line2D> startLines;
 	
 	/**
@@ -68,6 +75,9 @@ public class EvolutionComponent extends JComponent{
 		this.avgLines = new ArrayList<Line2D>();
 		this.worstLines = new ArrayList<Line2D>();
 		this.diversityLines = new ArrayList<Line2D>();
+		this.oneLines = new ArrayList<Line2D>();
+		this.zeroLines = new ArrayList<Line2D>();
+		this.questionLines = new ArrayList<Line2D>();
 		initializeGraph();
 	} // EvolutionComponent
 
@@ -93,15 +103,26 @@ public class EvolutionComponent extends JComponent{
 		Line2D avgLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getAverageFitness() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getAverageFitness() * DELTA_Y);
 		Line2D worstLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getLeastFitness() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getLeastFitness() * DELTA_Y);
 		Line2D diversityLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getAverageHammingDistance() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getAverageHammingDistance() * DELTA_Y);
+
+		Line2D oneLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getOnes() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getOnes() * DELTA_Y);
+		Line2D zeroLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getZeroes() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getZeroes() * DELTA_Y);
+		Line2D questionLine = new Line2D.Double(ORIGIN_X, ORIGIN_Y - population.getQuestions() * DELTA_Y, ORIGIN_X, ORIGIN_Y - population.getQuestions() * DELTA_Y);
 		
 		bestLines.add(bestLine);
 		avgLines.add(avgLine);
 		worstLines.add(worstLine);
 		diversityLines.add(diversityLine);
+		oneLines.add(oneLine);
+		zeroLines.add(zeroLine);
+		questionLines.add(questionLine);
+		
 		startLines.add(bestLine);
 		startLines.add(avgLine);
 		startLines.add(worstLine);
 		startLines.add(diversityLine);
+		startLines.add(oneLine);
+		startLines.add(zeroLine);
+		startLines.add(questionLine);
 	} // initializeGraph
 	
 	/**
@@ -136,6 +157,9 @@ public class EvolutionComponent extends JComponent{
 			updateLines(avgLines);
 			updateLines(worstLines);
 			updateLines(diversityLines);
+			updateLines(oneLines);
+			updateLines(zeroLines);
+			updateLines(questionLines);
 			this.newLinesDrawn = true;
 		}
 	} // updateAllLines
@@ -148,6 +172,9 @@ public class EvolutionComponent extends JComponent{
 		avgLines.clear();
 		worstLines.clear();
 		diversityLines.clear();
+		oneLines.clear();
+		zeroLines.clear();
+		questionLines.clear();
 		initializeGraph();
 	} // resetLines
 	
@@ -175,9 +202,18 @@ public class EvolutionComponent extends JComponent{
 		} else if (lines.equals(worstLines)) {
 //			System.out.println("worst: "+this.population.getLeastFitness());
 			y2 = ORIGIN_Y - (this.population.getLeastFitness() * DELTA_Y);
-		} else {
+		} else if (lines.equals(diversityLines)) {
 //			System.out.println("diversity: "+this.population.getAverageHammingDistance());
 			y2 = ORIGIN_Y - (this.population.getAverageHammingDistance() * DELTA_Y);
+		} else if (lines.equals(oneLines)) {
+//			System.out.println("worst: "+this.population.getLeastFitness());
+			y2 = ORIGIN_Y - (this.population.getOnes() * DELTA_Y / 200);
+		} else if (lines.equals(zeroLines)) {
+//			System.out.println("worst: "+this.population.getLeastFitness());
+			y2 = ORIGIN_Y - (this.population.getZeroes() * DELTA_Y / 200);
+		} else {
+//			System.out.println("worst: "+this.population.getLeastFitness());
+			y2 = ORIGIN_Y - (this.population.getQuestions() * DELTA_Y / 200);
 		}
 		Line2D newLine = new Line2D.Double(x1, y1, x2, y2);
 		if(generations>curGenerationsLeft)
@@ -200,6 +236,9 @@ public class EvolutionComponent extends JComponent{
 		g2.drawString("Worst Line", KEY_X, KEY_Y + KEY_TEXT_BUFFER);
 		g2.drawString("Average Line", KEY_X, KEY_Y + 2*KEY_TEXT_BUFFER);
 		g2.drawString("Diversity", KEY_X, KEY_Y + 3*KEY_TEXT_BUFFER);
+        g2.drawString("Ones Line", KEY_X, KEY_Y + 4*KEY_TEXT_BUFFER);
+		g2.drawString("Zeroes Line", KEY_X, KEY_Y + 5*KEY_TEXT_BUFFER);
+		g2.drawString("Questions Line", KEY_X, KEY_Y + 6*KEY_TEXT_BUFFER);
 
 		Rectangle best = new Rectangle(KEY_X - KEY_COLOR_BUFFER, KEY_Y - KEY_COLOR_BUFFER, KEY_COLOR_BUFFER, KEY_COLOR_BUFFER);
 		g2.setColor(BEST_COLOR);
@@ -213,6 +252,15 @@ public class EvolutionComponent extends JComponent{
 		Rectangle diversity = new Rectangle(KEY_X - KEY_COLOR_BUFFER, KEY_Y + 3*KEY_TEXT_BUFFER - KEY_COLOR_BUFFER, KEY_COLOR_BUFFER, KEY_COLOR_BUFFER);
 		g2.setColor(DIVERSITY_COLOR);
 		g2.fill(diversity);
+		Rectangle ones = new Rectangle(KEY_X - KEY_COLOR_BUFFER, KEY_Y + 4*KEY_TEXT_BUFFER - KEY_COLOR_BUFFER, KEY_COLOR_BUFFER, KEY_COLOR_BUFFER);
+		g2.setColor(ONE_COLOR);
+		g2.fill(ones);
+		Rectangle zeroes = new Rectangle(KEY_X - KEY_COLOR_BUFFER, KEY_Y + 5*KEY_TEXT_BUFFER - KEY_COLOR_BUFFER, KEY_COLOR_BUFFER, KEY_COLOR_BUFFER);
+		g2.setColor(ZERO_COLOR);
+		g2.fill(zeroes);
+		Rectangle questions = new Rectangle(KEY_X - KEY_COLOR_BUFFER, KEY_Y + 6*KEY_TEXT_BUFFER - KEY_COLOR_BUFFER, KEY_COLOR_BUFFER, KEY_COLOR_BUFFER);
+		g2.setColor(QUESTION_COLOR);
+		g2.fill(questions);
 	} // drawKey
 
 	/**
@@ -245,7 +293,25 @@ public class EvolutionComponent extends JComponent{
 			if(!startLines.contains(line))
 				g2.draw(line);
 		}
-	} // drawLines
+		
+		g2.setColor(ONE_COLOR);
+		for (Line2D line : this.oneLines) {
+			if(!startLines.contains(line))
+				g2.draw(line);
+		}
+	
+		g2.setColor(ZERO_COLOR);
+		for (Line2D line : this.zeroLines) {
+			if(!startLines.contains(line))
+				g2.draw(line);
+		}
+		
+		g2.setColor(QUESTION_COLOR);
+		for (Line2D line : this.questionLines) {
+			if(!startLines.contains(line))
+				g2.draw(line);
+		}
+} // drawLines
 
 	/**
 	 * ensures: draws the axes of the graph with hashmarks

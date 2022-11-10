@@ -52,12 +52,13 @@ public class EvolutionViewer {
 		max = "Generation0 " + -1;
 		min = "Generation0 " + Integer.MAX_VALUE;
 		population = new Population();
+		System.out.println(population);
 		selectionType = "Truncation";
-		ec = new EvolutionComponent(population);
 		generations = DEFAULT_GENERATIONS;
 		terminateOn = false;
 		crossover = false;
 		elitismNum = 0;
+		ec = new EvolutionComponent(population);
 		genCntLabel = new JLabel("Generation 0     ", SwingConstants.CENTER);
 	} // EvolutionViewer
 	
@@ -65,9 +66,6 @@ public class EvolutionViewer {
 	 * ensures: initializes and runs the frame and timer for the evolution component, as well as run the population and best individual viewer
 	 */
 	public void runEvolutionViewer() {
-		// run chromosome viewer
-		ChromosomeViewer cv = new ChromosomeViewer();
-        cv.runChromosomeViewer();
 		
 		// initialize frame
 		JFrame frame = new JFrame();
@@ -97,7 +95,7 @@ public class EvolutionViewer {
   		timer = new Timer(100, new ActionListener() {
   			public void actionPerformed(ActionEvent e)
   			{
-  				if((generations == 0) || (terminateOn && population.getBestFitness() == TERMINATE_AT_FITNESS))
+  				if((generations == 0))
   				{
   					timer.stop();
   					System.out.println("max: " + max + "," + min);
@@ -107,18 +105,21 @@ public class EvolutionViewer {
   				else
   				{
   					generations--;
-  					population.setFitnessType(fitnessType);
-  					population.setTargetChromosome(targetChromosome);
-  					if(selectionType.equals("Truncation"))
-  						population.truncate();
-  					else if(selectionType.equals("Roulette Wheel"))
-  						population.rouletteWheelSelection();
-  					else if(selectionType.equals("Rank"))
-  						population.rankSelection();
-  					else
-  						System.out.println("invalid selection type");
-  					population.setFitnessType(fitnessType);
-  					population.setTargetChromosome(targetChromosome);
+//  					population.setFitnessType(fitnessType);
+//  					population.setTargetChromosome(targetChromosome);
+//  					if(selectionType.equals("Truncation"))
+//  						population.truncate();
+//  					else if(selectionType.equals("Roulette Wheel"))
+//  						population.rouletteWheelSelection();
+//  					else if(selectionType.equals("Rank"))
+//  						population.rankSelection();
+//  					else
+//  						System.out.println("invalid selection type");
+  					population.nextGeneration();
+//  					population.setFitnessType(fitnessType);
+//  					population.setTargetChromosome(targetChromosome);
+  					System.out.println(population);
+  					population.sort();
       				ec.updatePop(population);
       				ec.updateGenerations(generations);
   					ec.repaint();
@@ -126,14 +127,16 @@ public class EvolutionViewer {
   					biv.updateBest(population.getBestIndividual());
   					genCntLabel.setText("Generation " + (maxGenerations-generations) + "     ");
   					System.out.println("Generation " + (maxGenerations-generations));
-  					int best = population.getBestFitness();
-  					if(Integer.parseInt(max.split(" ")[1]) < best)
-  						max = "Generation" + (maxGenerations-generations) + " " + Math.max(Integer.parseInt(max.split(" ")[1]),best);
-  					int worst = population.getLeastFitness();
-  					if(Integer.parseInt(min.split(" ")[1]) > worst)
-  						min = "Generation" + (maxGenerations-generations) + " " + Math.min(Integer.parseInt(min.split(" ")[1]),worst);
+//  					double best = population.getBestFitness();
+//  					if(Integer.parseInt(max.split(" ")[1]) < best)
+//  						max = "Generation" + (maxGenerations-generations) + " " + Math.max(Integer.parseInt(max.split(" ")[1]),best);
+//  					double worst = population.getLeastFitness();
+//  					if(Integer.parseInt(min.split(" ")[1]) > worst)
+//  						min = "Generation" + (maxGenerations-generations) + " " + Math.min(Integer.parseInt(min.split(" ")[1]),worst);
   					System.out.println("diversity: " + population.getAverageHammingDistance());
-  					System.out.println(population);
+  					System.out.println("ones:" + population.getOnes());
+  					System.out.println("zero:" + population.getZeroes() );
+  					System.out.println("q:" + population.getQuestions() );
   				}
   			} // actionPerformed
   		});
@@ -290,15 +293,15 @@ public class EvolutionViewer {
 		    			ec = new EvolutionComponent(population,generations);
 		    			frame.add(ec);
 		    			elitismNum = Integer.parseInt(elitismStr);
-		    			terminateOn = terminateBool;
+//		    			terminateOn = terminateBool;
 		    			crossover = crossoverBool;
-		    			fitnessType = fitnessTypeString;
-		    			selectionType = selectionString;
-		    			population.setFitnessType(fitnessType);
-		    			targetChromosome = cv.getTargetChromosome();
-		    			population.setTargetChromosome(targetChromosome);
-		    			population.setMutationRate(mRate);
-		    			population.setElitismNum(elitismNum);
+//		    			fitnessType = fitnessTypeString;
+//		    			selectionType = selectionString;
+//		    			population.setFitnessType(fitnessType);
+//		    			targetChromosome = cv.getTargetChromosome();
+//		    			population.setTargetChromosome(targetChromosome);
+//		    			population.setMutationRate(mRate);
+//		    			population.setElitismNum(elitismNum);
 		    			population.setCrossoverBool(crossoverBool);
 		    			state = "started";
 		    			simulationButton.setText("Pause");
@@ -345,17 +348,17 @@ public class EvolutionViewer {
 		    			pv.remove();
 		    			pv = new PopulationViewer(population);
 		    			pv.runPopulationViewer();
-						elitismNum = Integer.parseInt(elitismStr);
-						terminateOn = terminateBool;
+//						elitismNum = Integer.parseInt(elitismStr);
+//						terminateOn = terminateBool;
 						ec.resetLines();
 						crossover = crossoverBool;
-						fitnessType = fitnessTypeString;
-						selectionType = selectionString;
-						population.setFitnessType(fitnessType);
-						targetChromosome = cv.getTargetChromosome();
-						population.setTargetChromosome(targetChromosome);
-						population.setMutationRate(mRate);
-						population.setElitismNum(elitismNum);
+//						fitnessType = fitnessTypeString;
+//						selectionType = selectionString;
+//						population.setFitnessType(fitnessType);
+//						targetChromosome = cv.getTargetChromosome();
+//						population.setTargetChromosome(targetChromosome);
+//						population.setMutationRate(mRate);
+//						population.setElitismNum(elitismNum);
 						population.setCrossoverBool(crossoverBool);
 						state = "started";
 						simulationButton.setText("Pause");
